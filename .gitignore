@@ -14,3 +14,6 @@ production/raw/
 production/camera_*.json
 production/sample_*.exr
 production/sample_*.json
+
+production/weather_masks/
+production/camera_progress_*.json

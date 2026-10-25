@@ -9,9 +9,9 @@ def ease(x):x=max(0,min(1,x));return x*x*(3-2*x)
 WHITE=(245,255,254,240);TEAL=(153,252,227,225);DIM=(228,251,247,205)
 def text(d,pos,s,n=36,color=WHITE,b=False):
  x,y=pos;d.text((x+2,y+2),s,font=font(n,b),fill=(3,30,38,145));d.text((x,y),s,font=font(n,b),fill=color)
-def today(t):
- im=Image.new('RGBA',(W,620));d=ImageDraw.Draw(im);text(d,(55,25),'포항 · 맑음',42,TEAL);text(d,(48,96),'22°',178,WHITE,True);text(d,(58,330),'바깥 공기 좋음',44);text(d,(58,409),'실내 23°C   ·   습도 46%',35,DIM)
- for j,(label,value) in enumerate([('강수 확률','10%'),('미세먼지','좋음')]):
+def today(t,rainy=False):
+ im=Image.new('RGBA',(W,620));d=ImageDraw.Draw(im);text(d,(55,25),('포항 · 비' if rainy else '포항 · 맑음'),42,TEAL);text(d,(48,96),('20°' if rainy else '22°'),178,WHITE,True);text(d,(58,330),('빗방울 감지 · 자동 닫힘' if rainy else '바깥 공기 좋음'),44);text(d,(58,409),'실내 23°C   ·   습도 46%',35,DIM)
+ for j,(label,value) in enumerate([('강수 확률','95%' if rainy else '10%'),('미세먼지','좋음')]):
   x=650+j*310;d.line((x,120,x+220,120),fill=TEAL,width=2);text(d,(x,150),label,32,DIM);text(d,(x,218),value,53,WHITE,True)
  return im
 def week(t):
@@ -29,7 +29,7 @@ def week(t):
 def render(i,t):
  im=Image.new('RGBA',(W,H),(6,37,46,31));d=ImageDraw.Draw(im);d.line((35,25,1365,25),fill=(166,255,238,120),width=2);d.line((35,825,1365,825),fill=(166,255,238,90),width=2);text(d,(55,50),'LUMINEX',46,WHITE,True);text(d,(1020,64),'POHANG 2035',27,TEAL)
  if i in [2,4,5,10]:
-  sub=today(t)
+  sub=today(t,i==10 and t>3.8)
   if i==5:
    u=ease((t-4.1)/1);container=Image.new('RGBA',(W,610));container.alpha_composite(sub,(0,-round(u*630)));container.alpha_composite(week(t),(0,round((1-u)*630)));sub=container
   im.alpha_composite(sub,(0,170))
@@ -45,7 +45,7 @@ def render(i,t):
  elif i==8:
   text(d,(55,205),'SOFT LIGHT',95,WHITE,True);text(d,(60,380),'빛은 부드럽게, 시선은 흐리게',40,TEAL);text(d,(60,490),'풍경의 색과 빛을 머금은 반투명',35);text(d,(60,588),'저녁 모드 전환',35,DIM)
  elif i==11:
-  orange=(255,210,163,245);text(d,(55,195),'태풍 경보',94,orange,True);text(d,(60,360),'창문을 닫고 안전 잠금',42);text(d,(60,480),'닫는 중…' if t<6 else '안전 잠금 완료',43,TEAL);text(d,(60,600),'가족에게 알림 전송',34,DIM)
+  orange=(255,210,163,245);text(d,(55,195),'태풍 경보',94,orange,True);text(d,(60,360),'창문을 닫고 안전 잠금',42);text(d,(60,480),'닫는 중…' if t<2.6 else '안전 잠금 완료',43,TEAL);text(d,(60,600),'가족에게 알림 전송',34,DIM)
  elif i==13:
   text(d,(55,200),'SMART CARE',95,WHITE,True);text(d,(60,380),'누구나 편안한 우리 집',42,TEAL);text(d,(60,490),'공기에 맞춘 자동 환기',37);text(d,(60,590),'햇빛에 맞춘 에너지 관리',37)
  if i in [2,5,6]:

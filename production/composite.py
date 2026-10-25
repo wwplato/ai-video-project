@@ -19,7 +19,9 @@ from hud import render as render_hud
 def project_ui(im,quad,i,t,occluders=None):
  points=np.array(quad,dtype=np.float64)*[W,H];width=max(128,int(max(np.linalg.norm(points[1]-points[0]),np.linalg.norm(points[2]-points[3]))/32+1)*32);height=round(width*850/1400);src=np.array([[0,height],[width,height],[width,0],[0,0]],dtype=np.float64);A=[];B=[]
  for (x,y),(u,v) in zip(points,src):A.extend([[x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]]);B.extend([u,v])
- coeff=np.linalg.solve(np.array(A),np.array(B));source=render_hud(i,t).resize((width,height),Image.Resampling.LANCZOS);tile=source.transform((W,H),Image.Transform.PERSPECTIVE,coeff,resample=Image.Resampling.BICUBIC)
+ coeff=np.linalg.solve(np.array(A),np.array(B));source=render_hud(i,t).resize((width,height),Image.Resampling.LANCZOS)
+ if i==2:source.putalpha(source.getchannel('A').point(lambda value:round(value*ease((t-2.7)/.7))))
+ tile=source.transform((W,H),Image.Transform.PERSPECTIVE,coeff,resample=Image.Resampling.BICUBIC)
  if occluders:
   mask=Image.new('L',(W,H),255);d=ImageDraw.Draw(mask)
   for points in occluders:
@@ -28,21 +30,13 @@ def project_ui(im,quad,i,t,occluders=None):
   from PIL import ImageChops
   tile.putalpha(ImageChops.multiply(tile.getchannel('A'),mask))
  im.paste(tile,(0,0),tile)
-def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None):
+def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather_panes=None,weather_mask=None):
  im=im.convert('RGB')
  if i==8:im=Image.blend(im,Image.new('RGB',im.size,'#b67942'),.025)
- if i in [10,11]:
-  storm=1 if i==11 else ease((t-3.8)/.6)
-  if storm:
-   im=ImageEnhance.Brightness(im).enhance(1-.23*storm);im=Image.blend(im,Image.new('RGB',im.size,'#536a7a'),.14*storm)
-   rain=Image.new('RGBA',(W,H),(0,0,0,0));d=ImageDraw.Draw(rain)
-   for j in range(65):
-    x=680+(j*179)%1220;y=80+(j*59+t*550)%570
-    # Rain stays on the panorama, outside the resident's foreground area.
-    if 1020<x<1440 and y>390:continue
-    d.line((x,y,x-9,y+32),fill=(195,220,231,round(100*storm)),width=2)
-   im.paste(rain,(0,0),rain)
- if quad is not None and i not in [1,9,12]:project_ui(im,quad,i,t,occluders)
+ if i in [1,10,11] and weather_mask is not None:
+  from rain import apply as apply_rain
+  im=apply_rain(im,i,t,[] if weather_panes is None else weather_panes,weather_mask)
+ if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders)
  if i==12:
   card=Image.new('RGBA',(520,405),(0,0,0,0));cd=ImageDraw.Draw(card);cd.rounded_rectangle((0,0,519,404),radius=18,fill=(5,31,39,157),outline=(159,229,219,180),width=2);text(cd,(21,13),'우리 집 창문  ·  LIVE',23,TEAL,True)
   if home_frame is not None:

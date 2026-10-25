@@ -23,10 +23,12 @@ class Denoiser:
   self.buffers['color'][:]=np.nan_to_num(color);self.buffers['albedo'][:]=np.nan_to_num(albedo);self.buffers['normal'][:]=np.nan_to_num(normal);self.lib.oidnExecuteFilter(self.filter);self.check();return self.buffers['output'].copy()
 def channels(ch,prefix,letters='RGB'):return np.stack([ch[prefix+'.'+c].pixels for c in letters],axis=-1).astype(np.float32)
 def main():
- p=argparse.ArgumentParser();p.add_argument('--input',type=Path);p.add_argument('--output',type=Path);p.add_argument('--folder',type=Path);p.add_argument('--outdir',type=Path);p.add_argument('--ocio',default='/usr/share/blender/datafiles/colormanagement/config.ocio');p.add_argument('--keep-raw',action='store_true');p.add_argument('--background',type=Path);a=p.parse_args();jobs=[(a.input,a.output)] if a.input else [(x,a.outdir/(x.stem+'.png')) for x in sorted(a.folder.glob('*.exr'))]
+ p=argparse.ArgumentParser();p.add_argument('--input',type=Path);p.add_argument('--output',type=Path);p.add_argument('--folder',type=Path);p.add_argument('--outdir',type=Path);p.add_argument('--ocio',default='/usr/share/blender/datafiles/colormanagement/config.ocio');p.add_argument('--keep-raw',action='store_true');p.add_argument('--background',type=Path);p.add_argument('--mask-outdir',type=Path);a=p.parse_args();jobs=[(a.input,a.output)] if a.input else [(x,a.outdir/(x.stem+'.png')) for x in sorted(a.folder.glob('*.exr'))]
  cfg=OCIO.Config.CreateFromFile(a.ocio or "/usr/share/blender/datafiles/colormanagement/config.ocio");space=cfg.getRoleColorSpace('scene_linear');look=OCIO.LookTransform(src=space,dst=space,looks='AgX - Medium High Contrast');view=OCIO.DisplayViewTransform(src=space,display='sRGB',view='AgX');proc=cfg.getProcessor(OCIO.GroupTransform([look,view])).getDefaultCPUProcessor();denoiser=None;start=time.monotonic()
  for k,(src,dst) in enumerate(jobs):
   file=OpenEXR.File(str(src),separate_channels=True);ch=file.channels();prefix=next(x[:-2] for x in ch if x.endswith('.Combined.R'));color=channels(ch,prefix);layer=prefix.rsplit('.',1)[0];alb=channels(ch,layer+'.Denoising Albedo') if layer+'.Denoising Albedo.R' in ch else channels(ch,layer+'.DiffCol');nrm=channels(ch,layer+'.Denoising Normal','XYZ') if layer+'.Denoising Normal.X' in ch else channels(ch,layer+'.Normal','XYZ')
+  if a.mask_outdir:
+   key=next(k for k in ch if '.IndexOB' in k);mask=np.uint8(np.clip(ch[key].pixels/2,0,1)*255+.5);a.mask_outdir.mkdir(parents=True,exist_ok=True);Image.fromarray(mask).save(a.mask_outdir/(dst.stem+'.png'))
   if a.background:color=color/np.maximum(ch[prefix+'.A'].pixels[...,None],.02)
   if denoiser is None:denoiser=Denoiser(color.shape[1],color.shape[0])
   result=denoiser.run(color,alb,nrm);proc.applyRGB(result);rgb=np.uint8(np.clip(result,0,1)*255+.5)

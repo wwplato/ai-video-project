@@ -212,6 +212,8 @@ class Set(BaseSet):
   if self.i==12:
    ground=mat('Campus shadow receiver',(.5,.5,.5),.8);o=cube('Outdoor contact shadows',(0,0,-.04),(30,30,.08),ground);o.is_shadow_catcher=True;self.panel=None;return
   super().room()
+  from architecture import enclose_room
+  enclose_room(self)
   n=self.cloth.node_tree.nodes;l=self.cloth.node_tree.links;grain=n.new('ShaderNodeTexNoise');grain.inputs['Scale'].default_value=210;grain.inputs['Detail'].default_value=2;normal=n.new('ShaderNodeBump');normal.inputs['Strength'].default_value=.12;normal.inputs['Distance'].default_value=.0015;l.new(grain.outputs['Fac'],normal.inputs['Height']);l.new(normal.outputs[0],n.get('Principled BSDF').inputs['Normal'])
   if self.i==13:
    cube('Low child play surface',(-.61,-.65,.09),(.90,.48,.18),self.oak,.025)
@@ -228,6 +230,9 @@ class Set(BaseSet):
   if self.i==12:return
   self.backdrop();self.panorama.visible_shadow=False;self.glass_nodes=[];self.pane_roots=[]
   nodes=self.panorama_shader.id_data.nodes;links=self.panorama_shader.id_data.links;clear=next(n for n in nodes if n.type=='TEX_IMAGE');blur=nodes.new('ShaderNodeTexImage');blur.image=bpy.data.images.load(str(ASSET/'city_diffused.png'),check_existing=True);self.diffusion=nodes.new('ShaderNodeMixRGB');links.new(clear.outputs['Color'],self.diffusion.inputs[1]);links.new(blur.outputs['Color'],self.diffusion.inputs[2]);links.new(self.diffusion.outputs[0],self.panorama_shader.inputs['Color'])
+  storm=nodes.new('ShaderNodeTexImage');storm.image=bpy.data.images.load(str(ASSET/'storm.png'),check_existing=True);self.storm_mix=nodes.new('ShaderNodeMixRGB');links.new(self.diffusion.outputs[0],self.storm_mix.inputs[1]);links.new(storm.outputs['Color'],self.storm_mix.inputs[2]);links.new(self.storm_mix.outputs[0],self.panorama_shader.inputs['Color'])
+  if self.i in [1,10,11]:
+   bpy.context.scene.view_layers[0].use_pass_object_index=True;bpy.context.scene.view_layers[0].pass_alpha_threshold=0;self.panorama.pass_index=1
   for x in [-3.3,2.9]:cube('Outer titanium jamb',(x,2.07,1.8),(.075,.12,3.4),self.metal,.012)
   for z in [.13,3.48]:cube('Double sliding track',(-.2,2.07,z),(6.25,.14,.07),self.metal,.012)
   for k,(x0,x1,y) in enumerate([(-3.24,-.20,2.04),(-.20,2.84,1.985)]):
@@ -241,13 +246,17 @@ class Set(BaseSet):
     for z in [1.48,1.67]:part(cube('Handle mounting block',(x1-.12,y-.045,z),(.033,.06,.033),self.bronze,.008))
     part(cyl('Sliding window grip',(x1-.12,y-.08,1.575),.015,.19,self.bronze))
   self.sash=self.pane_roots[1]
+  from architecture import upgrade_window
+  upgrade_window(self)
+  for root in self.pane_roots:
+   for ob in root.children:
+    if ob.name.startswith(("Actual glass", "Second low E")):ob.pass_index=2
   self.blackout=cube('Electrochromic blackout laminate',(-.2,2.10,1.8),(6.12,.008,3.22),self.black,.003);self.blackout.hide_render=True
   material=bpy.data.materials.new('Variable transmission blackout');material.use_nodes=True;ns=material.node_tree.nodes;ns.clear();a=ns.new('ShaderNodeBsdfTransparent');b=ns.new('ShaderNodeBsdfDiffuse');b.inputs['Color'].default_value=(.001,.002,.004,1);self.opacity=ns.new('ShaderNodeMixShader');nsout=ns.new('ShaderNodeOutputMaterial');material.node_tree.links.new(a.outputs[0],self.opacity.inputs[1]);material.node_tree.links.new(b.outputs[0],self.opacity.inputs[2]);material.node_tree.links.new(self.opacity.outputs[0],nsout.inputs[0]);self.blackout.data.materials.clear();self.blackout.data.materials.append(material)
   self.latch=cube('Safety motor latch',(2.76,1.91,1.45),(.08,.06,.19),self.bronze,.012);self.latch.hide_render=self.i not in [10,11]
+  self.latch.location=(2.884,1.88,1.25)
+  self.lock_bolt=cube('Positive safety locking bolt',(2.87,1.87,1.25),(.06,.03,.023),self.bronze,.004);self.lock_bolt.hide_render=self.i not in [10,11]
   self.panel=self.screen('window',(-1.70,1.94,2.03),(2.80,1.70));self.rain=[]
-  if self.i==1:
-   rng=random.Random(22);rainmat=mat('Rain glints',(.6,.8,.9),.1)
-   for j in range(18):o=cyl('Raindrop',(0,0,0),.0015,.1,rainmat);self.rain.append((o,rng.uniform(-3.1,2.7),rng.uniform(0,3)))
  def bed(self):
   cube('Upholstered bed base',(.3,.18,.30),(1.65,2.5,.45),self.cloth,.12);cube('Linen mattress',(.3,.18,.55),(1.62,2.40,.25),self.ivory,.12);cube('Soft headboard',(.3,1.47,.85),(1.85,.16,1.25),self.cloth,.10);sphere('Compressible pillow',(.3,1.04,.72),(.66,.34,.045),self.ivory)
   self.duvet_verts=[];faces=[];self.duvet_nx=43;self.duvet_ny=43
@@ -288,12 +297,12 @@ class Set(BaseSet):
   for o in self.lightobjects:o.data.use_shadow=True;o.data.specular_factor=0.0;o.visible_glossy=False;o.visible_transmission=False;o.visible_camera=False
   if self.i==12:self.sun.rotation_euler=(.55,-.45,-.6);self.sun.data.energy=1.3
  def actors(self):
-  if self.i in [10,11]:self.people=[];self.actor=None;return
+  if self.i in [2,10,11]:self.people=[];self.actor=None;return
   super().actors()
   if self.i==12:self.panel=self.phone_screen
  def camera(self):
   super().camera()
-  if self.i in [10,11]:self.cam.location=(-.2,-5.7,2.2);self.target=(-.2,2.0,1.0);self.cam.data.lens=32;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
+  if self.i in [10,11]:self.cam.location=(-.2,-5.7,2.2);self.target=(-.2,2.0,1.3);self.cam.data.lens=25;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
   if self.i==12:self.cam.location=(2.2,-3.5,1.95);self.target=(.1,.0,1.18);self.cam.data.lens=49;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
  def render(self):
   s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=4;s.cycles.use_denoising=False;s.cycles.max_bounces=8;s.cycles.diffuse_bounces=2;s.cycles.glossy_bounces=2;s.cycles.transmission_bounces=6;s.cycles.transparent_max_bounces=8;s.cycles.use_adaptive_sampling=False;s.cycles.use_animated_seed=False;s.cycles.seed=2035;s.cycles.sample_clamp_indirect=3;s.cycles.caustics_reflective=False;s.cycles.caustics_refractive=False;s.render.threads_mode='FIXED';s.render.threads=1;s.render.use_persistent_data=True;s.render.resolution_x=1280;s.render.resolution_y=720;s.render.resolution_percentage=100;s.render.fps=12;s.render.image_settings.file_format='OPEN_EXR_MULTILAYER';s.render.image_settings.color_depth='16';s.render.image_settings.exr_codec='ZIP';s.view_layers[0].use_pass_diffuse_color=False;s.view_layers[0].use_pass_normal=False;s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast';s.render.film_transparent=self.i==12;s.view_layers[0].cycles.denoising_store_passes=True
@@ -302,35 +311,42 @@ class Set(BaseSet):
   if i!=12:
    for o,x,z in self.rain:o.location=(x,2.0,.20+(z-t*1.6)%3.1)
    opacity=1 if i in [3,9] else (1-ease((t-1.4)/1.5) if i==4 else 0);self.blackout.hide_render=opacity<.001;self.opacity.inputs[0].default_value=opacity
-   opened=.85 if i==1 else (ease((t-6)/2.2) if i==4 else (1-ease((t-4.1)/1.7) if i in [10,11] else 0));self.sash.location.x=-3.02*opened
+   opened=.85 if i==1 else (ease((t-6)/2.2) if i==4 else (1-ease((t-(.8 if i==11 else 4.1))/(1.6 if i==11 else 1.7)) if i in [10,11] else 0));self.sash.location.x=-3.02*opened
    rough=.002+(.28*ease((t-2.5)/2) if i==8 else 0)
    self.diffusion.inputs[0].default_value=ease((t-2.5)/2) if i==8 else 0
+   self.storm_mix.inputs[0].default_value=1 if i==11 else .68*ease((t-3.3)/1.5) if i==10 else .65 if i==1 and t<5 else 0
+   self.state_light_shader.inputs['Color'].default_value=(1,.35,.055,1) if i==11 else (.38,.80,.70,1)
    for g in self.glass_nodes:g.inputs['Roughness'].default_value=.08+.30*ease((t-2.5)/2) if i==8 else .08
    daylight=1-opacity
    for k,o in enumerate(self.lightobjects):o.data.energy=[320,145][k]*(.04+.96*daylight)
-   self.sun.data.energy=.65*(.015+.985*daylight);self.panorama_shader.inputs['Strength'].default_value=.45 if i==8 else .8
+   if i in [10,11]:self.lock_bolt.location.x=2.87-.025*ease((t-(2.4 if i==11 else 5.8))/.4)
+   weather=self.storm_mix.inputs[0].default_value
+   self.sun.data.energy=.65*(.015+.985*daylight)*(1-.96*weather);self.sun.data.color=(1-.4*weather,.91-.25*weather,.79+.13*weather);self.panorama_shader.inputs['Strength'].default_value=.45 if i==8 else .8
+   for light in self.lightobjects:light.data.color=(1,.91,.75) if weather>.5 else (.87,.94,1)
    if i==8:
     self.sun.data.color=(1,.70,.43)
     for o in self.lightobjects:o.data.color=(1,.86,.70)
    appear=1 if i in [3,9] else ease((t-(.5 if i==2 else 2.9 if i in [5,6] else 0))/.8);self.panel.location.y=2.0-.08*appear;self.panel.scale=(.02+.98*appear,)*3
-  if i in [0,14,10,11]:return
+  if i==2:
+   u=ease(t/3.8);self.cam.location=(1.5+2.3*u,.50-5.0*u,1.65+.71*u);self.cam.data.lens=55-20*u;self.cam.location.x+=.025*max(0,t-3.8);self.cam.location.y-=.025*max(0,t-3.8);aim(self.cam,(2.66-2.76*u,1.98,1.58+.29*u))
+  if i in [0,14,2,10,11]:return
   a=self.actor
   if i==1:
    if t<5:
-    a.walk(t,4.2,(-1.7,-2.0),-.65,4,.7)
+    a.walk(t,4.2,(-1.7,-2.0),-.65,4,.72)
     for o,side in self.curtain_data:
      for j,v in enumerate(o.data.vertices):v.co.x=(2.53 if side==1 else -3.28)+(j%37)/36*.3
      o.data.update()
    else:
     self.panorama_shader.inputs['Strength'].default_value=.045;self.sun.data.energy=.01
     for k,o in enumerate(self.lightobjects):o.data.energy=[55,85][k]
-    self.cam.location=(3.4,-4.4,2.4);aim(self.cam,(.65,1.3,1.5));a.walk(max(0,t-5),2.6,(.8,1.48),-math.pi/2);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
+    self.cam.location=(3.4,-4.4,2.4);aim(self.cam,(.65,1.3,1.5));a.walk(max(0,t-5),2.6,(.8,1.48),-math.pi/2,2,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
     for o,side in self.curtain_data:
      left=a.root.location.x+.27 if side==1 else -3.28;width=2.83-left if side==1 else .30
      for j,v in enumerate(o.data.vertices):v.co.x=left+(j%37)/36*width
      o.data.update()
   elif i in [2,5,6]:
-   a.walk(t,1.6,(0,1.48),math.pi);contact=ease((t-3.0)/.8)*(1-ease((t-7.1)/.9));a.touch('L',(-.42,1.965,1.48),contact);a.head_turn(-.07*ease((t-2.6)/.8))
+   a.walk(t,2.5,(0,1.48),math.pi,2,.78);contact=ease((t-3.0)/.8)*(1-ease((t-7.1)/.9));a.touch('L',(-.42,1.965,1.48),contact);a.head_turn(-.07*ease((t-2.6)/.8))
   elif i in [3,4,9]:
    rise=ease((t-1.5)/3.5) if i==4 else 0;a.sleep_pose(t,rise);pull=ease((t-.7)/1.3) if i==4 else 0
    for side,sign in [('L',1),('R',-1)]:
@@ -352,29 +368,40 @@ class Set(BaseSet):
   if i not in [3,4,9]:a.blink(t)
 
 def main():
- import shutil
- p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=5);p.add_argument('--frames',type=int,default=120);p.add_argument('--width',type=int,default=1280);p.add_argument('--sample',type=int);p.add_argument('--fps',type=int,default=12);p.add_argument('--samples',type=int);a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);w=Set(a.scene);s=bpy.context.scene;s.render.resolution_x=a.width;s.render.resolution_y=round(a.width*9/16);s.render.fps=a.fps;s.cycles.samples=a.samples or (8 if a.scene==8 else 4);raw=P/'raw'/f'{a.scene:02}';out=P/'frames'/f'{a.scene:02}';raw.mkdir(parents=True,exist_ok=True);out.mkdir(parents=True,exist_ok=True);python=os.environ.get('LUMINEX_PYTHON') or shutil.which('python') or shutil.which('python3');ocio=str(Path(bpy.utils.system_resource('DATAFILES',path='colormanagement'))/'config.ocio');ocio=ocio if Path(ocio).exists() else '/usr/share/blender/datafiles/colormanagement/config.ocio'
+ import shutil,copy
+ p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=5);p.add_argument('--frames',type=int,default=120);p.add_argument('--width',type=int,default=1280);p.add_argument('--sample',type=int);p.add_argument('--fps',type=int,default=12);p.add_argument('--samples',type=int);a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);w=Set(a.scene);s=bpy.context.scene;s.render.resolution_x=a.width;s.render.resolution_y=round(a.width*9/16);s.render.fps=a.fps;s.cycles.samples=a.samples or 4;raw=P/'raw'/f'{a.scene:02}';out=P/'frames'/f'{a.scene:02}';raw.mkdir(parents=True,exist_ok=True);out.mkdir(parents=True,exist_ok=True);python=os.environ.get('LUMINEX_PYTHON') or shutil.which('python');ocio=str(Path(bpy.utils.system_resource('DATAFILES',path='colormanagement'))/'config.ocio');ocio=ocio if Path(ocio).exists() else '/usr/share/blender/datafiles/colormanagement/config.ocio'
  def uv(v):q=world_to_camera_view(s,w.cam,v);return [float(q.x),float(1-q.y)]
  def meta(t):
   hands=[]
   for actor in w.people:
    for side in ['L','R']:
     a1=actor.joint(side+' Finger11');a2=actor.joint(side+' Finger12');tip=a2+(a2-a1).normalized()*.022*actor.factor;hands.append([uv(actor.joint(side+' Hand')),uv(actor.joint(side+' Finger1')),uv(a1),uv(tip)])
-  return {'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
+  panes=[]
+  for pane in getattr(w,'glass_panes',[]):
+   xs=[v.co.x for v in pane.data.vertices];ys=[v.co.y for v in pane.data.vertices];zs=[v.co.z for v in pane.data.vertices];panes.append([uv(pane.matrix_world@Vector(v)) for v in [(min(xs),min(ys),min(zs)),(max(xs),min(ys),min(zs)),(max(xs),min(ys),max(zs)),(min(xs),min(ys),max(zs))]])
+  return {'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
  common=[python,str(P/'denoise.py'),'--ocio',ocio]
  if a.scene==12:common+=['--background',str(ASSET/'campus.png')]
+ if a.scene in [1,10,11]:common+=['--mask-outdir',str(P/'weather_masks'/f'{a.scene:02}')]
  if a.sample is not None:
-  t=a.sample/a.fps;w.update(t);f=P/f'sample_{a.scene:02}_{a.sample}.exr';s.render.filepath=str(f);bpy.ops.render.render(write_still=True);subprocess.run(common+['--input',str(f),'--output',str(f.with_suffix('.png'))],check=True);f.with_suffix('.json').write_text(json.dumps(meta(t)));return
- metadata=[];seen=set()
- def update(scene):
-  if len(seen)>=a.frames and scene.frame_current==1:return
-  t=(scene.frame_current-1)/a.fps;w.update(t)
-  if scene.frame_current not in seen:metadata.append(meta(t));seen.add(scene.frame_current)
- bpy.app.handlers.frame_change_pre.clear();bpy.app.handlers.frame_change_pre.append(update);render_frames=47 if a.scene==3 and a.frames==120 else a.frames;s.frame_start=1;s.frame_end=render_frames;s.render.filepath=str(raw)+'/';bpy.ops.render.render(animation=True);assert len(metadata)==render_frames
+  t=a.sample/a.fps;w.update(t);bpy.context.view_layer.update();f=P/f'sample_{a.scene:02}_{a.sample}.exr';s.render.filepath=str(f);bpy.ops.render.render(write_still=True);subprocess.run(common+['--input',str(f),'--output',str(f.with_suffix('.png'))],check=True);f.with_suffix('.json').write_text(json.dumps(meta(t)));return
+ metadata=[];duplicates={};previous=None;previous_index=None;render_frames=47 if a.scene==3 and a.frames==120 else a.frames
+ for index in range(render_frames):
+  t=index/a.fps;s.frame_set(index+1);w.update(t);bpy.context.view_layer.update();metadata.append(meta(t));key=None
+  if a.scene==5 and index>=72 and index%2==1:
+   duplicates[index+1]=index;continue
+  if a.scene in [10,11]:key=(round(w.sash.location.x,7),round(w.lock_bolt.location.x,6),round(w.storm_mix.inputs[0].default_value,6),tuple(round(x,5) for x in w.state_light_shader.inputs['Color'].default_value))
+  if key is not None and key==previous:duplicates[index+1]=previous_index;continue
+  if (raw/f'{index+1:04}.exr').exists():
+   previous=key;previous_index=index+1;print('FRAME_CACHED',a.scene,index+1,flush=True);continue
+  s.render.filepath=str(raw/f'{index+1:04}.exr');bpy.ops.render.render(write_still=True);previous=key;previous_index=index+1;print('FRAME_READY',a.scene,index+1,'of',render_frames,flush=True)
  (P/f'camera_pending_{a.scene:02}.json').write_text(json.dumps(metadata));subprocess.run(common+['--folder',str(raw),'--outdir',str(out)],check=True)
+ for target,source in duplicates.items():
+  shutil.copy2(out/f'{source:04}.png',out/f'{target:04}.png')
+  mask=P/'weather_masks'/f'{a.scene:02}'
+  if mask.exists():shutil.copy2(mask/f'{source:04}.png',mask/f'{target:04}.png')
  if render_frames<a.frames:
-  import copy
   for index in range(render_frames,a.frames):
    source=index%render_frames;shutil.copy2(out/f'{source+1:04}.png',out/f'{index+1:04}.png');entry=copy.deepcopy(metadata[source]);entry['time']=index/a.fps;metadata.append(entry)
- assert len(list(out.glob('*.png')))==a.frames;(P/f'camera_{a.scene:02}.json').write_text(json.dumps(metadata));print('SCENE_DONE',a.scene,flush=True)
+ assert len(list(out.glob('*.png')))==a.frames;(P/f'camera_{a.scene:02}.json').write_text(json.dumps(metadata));print('SCENE_DONE',a.scene,'unique',render_frames-len(duplicates),'logical',a.frames,flush=True)
 if __name__=='__main__':main()

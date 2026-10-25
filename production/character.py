@@ -70,38 +70,56 @@ class Character:
  def idle(self,t,pos=(0,0,0),yaw=0):self.pose('f_idle_breathe_01',t,pos,yaw,stable=True);self.ground()
  def _reference_stance(self):
   if hasattr(self,'standing'):return self.standing
-  self.pose('f_idle_breathe_01',0,stable=True);self.ground();self.standing={'height':float(self.root.location.z),'bones':{p.name:self.rig.matrix_world@p.matrix.copy() for p in self.rig.pose.bones if any(x in p.name for x in ['Thigh','Calf','Foot','Toe'])}};return self.standing
+  self.pose('f_idle_breathe_01',0,stable=True);self.ground();contacts={};dg=bpy.context.evaluated_depsgraph_get()
+  for side in ['L','R']:
+   points=[]
+   for ob in self.meshes:
+    ev=ob.evaluated_get(dg);me=ev.to_mesh();points.extend([ev.matrix_world@me.vertices[int(k)].co for k in self.foot_ids[ob.name,side]]);ev.to_mesh_clear()
+   low=min(p.z for p in points);sole=[p for p in points if p.z<low+.022];front=min(p.y for p in sole);back=max(p.y for p in sole)
+   toe=[p for p in sole if p.y<front+.032];heel=[p for p in sole if p.y>back-.032]
+   contacts[side]={'toe':Vector((sum(p.x for p in toe)/len(toe),front,low)),'heel':Vector((sum(p.x for p in heel)/len(heel),back,low))}
+  self.standing={'height':float(self.root.location.z),'bones':{p.name:self.rig.matrix_world@p.matrix.copy() for p in self.rig.pose.bones if any(x in p.name for x in ['Thigh','Calf','Foot','Toe'])},'contacts':contacts};return self.standing
  def place_leg(self,side,hip,target,foot_rotation,reference,yaw):
   inv=self.rig.matrix_world.inverted();R=Matrix.Rotation(yaw,3,'Z');Q=R.to_quaternion();u,l,f=[self.rig.pose.bones['Bip01 '+side+' '+n] for n in ['Thigh','Calf','Foot']];um,lm,fm=[reference[p.name] for p in [u,l,f]];h0,k0,a0=[m.translation for m in [um,lm,fm]];len1=(k0-h0).length;len2=(a0-k0).length;v=target-hip;dist=min(v.length,len1+len2-.0001);axis=v.normalized();old_axis=(a0-h0).normalized();hint=(k0-h0)-old_axis*(k0-h0).dot(old_axis)
   if hint.length<.002:hint=Vector((0,-1,0))
-  hint=R@hint;hint=hint-axis*hint.dot(axis);hint.normalize();along=(len1*len1-len2*len2+dist*dist)/(2*dist);knee=hip+axis*along+hint*math.sqrt(max(.000001,len1*len1-along*along));rotu=(R@(k0-h0)).rotation_difference(knee-hip)@Q@um.to_quaternion();rotl=(R@(a0-k0)).rotation_difference(target-knee)@Q@lm.to_quaternion()
+  hint=R@Vector((.08 if side=='L' else -.08,-1,.10));hint=hint-axis*hint.dot(axis);hint.normalize();along=(len1*len1-len2*len2+dist*dist)/(2*dist);knee=hip+axis*along+hint*math.sqrt(max(.000001,len1*len1-along*along));rotu=(R@(k0-h0)).rotation_difference(knee-hip)@Q@um.to_quaternion();rotl=(R@(a0-k0)).rotation_difference(target-knee)@Q@lm.to_quaternion()
   for p,pos,q,m in [(u,hip,rotu,um),(l,knee,rotl,lm),(f,target,foot_rotation,fm)]:p.matrix=inv@Matrix.LocRotScale(pos,q,m.to_scale());bpy.context.view_layer.update()
   delta=foot_rotation@fm.to_quaternion().inverted()
   for p in self.rig.pose.bones:
    if p.name.startswith('Bip01 '+side+' Toe'):
     m=reference[p.name];p.matrix=inv@Matrix.LocRotScale(target+delta@(m.translation-a0),delta@m.to_quaternion(),m.to_scale());bpy.context.view_layer.update()
- def walk(self,t,duration,end=(0,1.48),yaw=math.pi,cycles=1,intensity=.7):
+ def walk(self,t,duration,end=(0,1.48),yaw=math.pi,cycles=2,intensity=.8):
   if t>=duration:self.idle(t-duration,(*end,0),yaw);return
-  ref=self._reference_stance();bones=ref['bones'];u=max(0,t/duration);R=Matrix.Rotation(yaw,3,'Z');Q=R.to_quaternion();forward=R@Vector((0,-1,0));distance=.54*cycles;start=Vector((end[0],end[1],0))-forward*distance
-  if u<.1:progress=.5*u*u/.1/.9
-  elif u>.9:progress=(.9-.5*(1-u)**2/.1)/.9
-  else:progress=(u-.05)/.9
-  root=start+forward*distance*progress;env=min(ease(u/.15),ease((1-u)/.15));root+=R@Vector((.008*math.sin(u*cycles*2*math.pi)*env,0,0));targets={};rotations={}
+  ref=self._reference_stance();bones=ref['bones'];u=max(0,t/duration);R=Matrix.Rotation(yaw,3,'Z');Q=R.to_quaternion();forward=R@Vector((0,-1,0));distance=.62*cycles;start=Vector((end[0],end[1],0))-forward*distance
+  # Smooth acceleration/deceleration; real planted contacts stay in world space.
+  if u<.12:progress=.5*u*u/.12/.88
+  elif u>.88:progress=(.88-.5*(1-u)**2/.12)/.88
+  else:progress=(u-.06)/.88
+  env=min(ease(u/.13),ease((1-u)/.16));root=start+forward*distance*progress;root+=R@Vector((.012*math.sin(u*cycles*2*math.pi)*env,0,0));targets={};rotations={}
   for side,parity in [('R',0),('L',1)]:
-   advance=0;lift=0;roll=0
+   advance=0;lift=0;roll=0;contact='heel'
    for step in range(parity,cycles*2,2):
-    a=.08+step*(.84/(cycles*2));b=a+.76*(.84/(cycles*2));phase=max(0,min(1,(u-a)/(b-a)));advance+=distance/cycles*ease(phase)
-    if 0<phase<1:lift=.055*math.sin(math.pi*phase);roll=.10*math.sin(2*math.pi*phase)
-   fm=bones['Bip01 '+side+' Foot'];targets[side]=start+R@fm.translation+forward*advance+Vector((0,0,lift));rotations[side]=Quaternion(R@Vector((1,0,0)),roll)@Q@fm.to_quaternion()
-  height=ref['height']+.007*math.sin(u*cycles*4*math.pi)*env
+    a=.055+step*(.84/(cycles*2));b=a+.90*(.84/(cycles*2));p=max(0,min(1,(u-a)/(b-a)))
+    # A cycloid gives zero horizontal/vertical velocity at contact.
+    advance+=distance/cycles*(p-math.sin(2*math.pi*p)/(2*math.pi))
+    if a-.045<u<a:
+     roll=math.radians(18)*ease((u-a+.045)/.045);contact='toe'
+    elif 0<p<1:
+     lift=.052*math.sin(math.pi*p)**2
+     roll=math.radians(18)*(1-ease(p/.38))-math.radians(9)*ease((p-.45)/.55);contact='toe' if roll>0 else 'heel'
+    elif b<=u<b+.055:roll=-math.radians(9)*(1-ease((u-b)/.055));contact='heel'
+   fm=bones['Bip01 '+side+' Foot'];anchor=start+R@fm.translation+forward*advance;delta=Quaternion(R@Vector((1,0,0)),roll);pivot=R@(ref['contacts'][side][contact]-fm.translation);targets[side]=anchor+pivot-delta@pivot+Vector((0,0,lift));rotations[side]=delta@Q@fm.to_quaternion()
+  height=ref['height']+.010*(1-math.cos(u*cycles*4*math.pi))*env
   for side in ['L','R']:
    hm=bones['Bip01 '+side+' Thigh'];km=bones['Bip01 '+side+' Calf'];fm=bones['Bip01 '+side+' Foot'];length=(km.translation-hm.translation).length+(fm.translation-km.translation).length;offset=hm.translation-Vector((0,0,ref['height']));hip_xy=root+R@offset;horizontal=(Vector((hip_xy.x,hip_xy.y,0))-Vector((targets[side].x,targets[side].y,0))).length;max_z=targets[side].z+math.sqrt(max(.01,(length*.994)**2-horizontal**2))-offset.z;height=min(height,max_z)
-  hs,qs=self.sample('f_idle_breathe_01',0);period=(len(MOTION['f_walk_neutral']['frames'])-1)/30;hw,qw=self.sample('f_walk_neutral',.4+u*cycles*period);q={n:p.slerp(qw.get(n,p),.44*env) for n,p in qs.items()}
+  hs,qs=self.sample('f_idle_breathe_01',0);period=(len(MOTION['f_walk_neutral']['frames'])-1)/30;hw,qw=self.sample('f_walk_neutral',.4+u*cycles*period);q={n:p.slerp(qw.get(n,p),min(.78,intensity)*env) for n,p in qs.items()}
   for n in q:
    if any(x in n for x in ['Pelvis','Thigh','Calf','Foot','Toe']):q[n]=qs[n]
   self.apply(0,q,(root.x,root.y,0),yaw,pelvis=height)
   for side in ['L','R']:
    offset=bones['Bip01 '+side+' Thigh'].translation-Vector((0,0,ref['height']));hip=Vector((root.x,root.y,height))+R@offset;self.place_leg(side,hip,targets[side],rotations[side],bones,yaw)
+   correction=max(0,.005-self.surface_z(side))
+   if correction>.00001:self.place_leg(side,hip,targets[side]+Vector((0,0,correction)),rotations[side],bones,yaw)
  def limb(self,side,target,weight=1,leg=False,preserve=False,bend_hint=None):
   if weight<=0:return
   names=['Thigh','Calf','Foot'] if leg else ['UpperArm','Forearm','Hand'];u,l,end=[self.rig.pose.bones['Bip01 '+side+' '+n] for n in names];old=end.matrix.to_quaternion();dest=self.rig.matrix_world.inverted()@Vector(target);dest=end.head.lerp(dest,weight);s=u.head.copy();e=l.head.copy();h=end.head.copy();a=(e-s).length;b=(h-e).length;vec=dest-s;dist=min(vec.length,a+b-.001);axis=vec.normalized();bend=e-s-axis*(e-s).dot(axis)
