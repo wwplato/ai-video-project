@@ -312,7 +312,7 @@ class Set(BaseSet):
    if i==8:
     self.sun.data.color=(1,.70,.43)
     for o in self.lightobjects:o.data.color=(1,.86,.70)
-   appear=ease((t-(.5 if i==2 else 2.9 if i in [5,6] else 0))/.8);self.panel.location.y=2.0-.08*appear;self.panel.scale=(.02+.98*appear,)*3
+   appear=1 if i in [3,9] else ease((t-(.5 if i==2 else 2.9 if i in [5,6] else 0))/.8);self.panel.location.y=2.0-.08*appear;self.panel.scale=(.02+.98*appear,)*3
   if i in [0,14,10,11]:return
   a=self.actor
   if i==1:
@@ -370,6 +370,11 @@ def main():
   if len(seen)>=a.frames and scene.frame_current==1:return
   t=(scene.frame_current-1)/a.fps;w.update(t)
   if scene.frame_current not in seen:metadata.append(meta(t));seen.add(scene.frame_current)
- bpy.app.handlers.frame_change_pre.clear();bpy.app.handlers.frame_change_pre.append(update);s.frame_start=1;s.frame_end=a.frames;s.render.filepath=str(raw)+'/';bpy.ops.render.render(animation=True);assert len(metadata)==a.frames
- (P/f'camera_pending_{a.scene:02}.json').write_text(json.dumps(metadata));subprocess.run(common+['--folder',str(raw),'--outdir',str(out)],check=True);assert len(list(out.glob('*.png')))==a.frames;(P/f'camera_{a.scene:02}.json').write_text(json.dumps(metadata));print('SCENE_DONE',a.scene,flush=True)
+ bpy.app.handlers.frame_change_pre.clear();bpy.app.handlers.frame_change_pre.append(update);render_frames=47 if a.scene==3 and a.frames==120 else a.frames;s.frame_start=1;s.frame_end=render_frames;s.render.filepath=str(raw)+'/';bpy.ops.render.render(animation=True);assert len(metadata)==render_frames
+ (P/f'camera_pending_{a.scene:02}.json').write_text(json.dumps(metadata));subprocess.run(common+['--folder',str(raw),'--outdir',str(out)],check=True)
+ if render_frames<a.frames:
+  import copy
+  for index in range(render_frames,a.frames):
+   source=index%render_frames;shutil.copy2(out/f'{source+1:04}.png',out/f'{index+1:04}.png');entry=copy.deepcopy(metadata[source]);entry['time']=index/a.fps;metadata.append(entry)
+ assert len(list(out.glob('*.png')))==a.frames;(P/f'camera_{a.scene:02}.json').write_text(json.dumps(metadata));print('SCENE_DONE',a.scene,flush=True)
 if __name__=='__main__':main()

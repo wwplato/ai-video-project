@@ -11,5 +11,8 @@
   "other_dialogue_pcm_unchanged": true,
   "music": "Preserved quiet sampled grand piano and warm pad",
   "tts_brand_name_asr": "루미 넥스",
-  "duration_seconds": 150
+  "duration_seconds": 150,
+  "visual_revision_audio_unchanged": true,
+  "aac_packets_match_approved_soundtrack": true,
+  "aac_adts_sha256": "5b139002147eb51ec560e1738e3a3f46feca785f644f57f69f51e6150ec8978b"
 }

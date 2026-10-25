@@ -1,206 +1,225 @@
 {
   "product": "LUMINEX",
-  "type": "Rigged textured 3D meshes with retargeted motion and arm IK",
-  "camera_independent_measurement": true,
+  "camera_independent_world_space_measurements": true,
   "source_animation_fps": 12,
   "output_fps": 24,
-  "unique_3d_shots": 9,
-  "character_scene_segments": 13,
+  "unique_3d_shots": 10,
+  "character_scene_segments": 11,
+  "walking": [
+    {
+      "source_scene": 3,
+      "forward_motion_monotonic": true,
+      "travel_m": 0.54,
+      "stopped_at_seconds": 1.6,
+      "maximum_stopped_foot_drift_m": 0.0
+    },
+    {
+      "source_scene": 6,
+      "forward_motion_monotonic": true,
+      "travel_m": 0.54,
+      "stopped_at_seconds": 1.6,
+      "maximum_stopped_foot_drift_m": 0.0
+    }
+  ],
+  "bed": [
+    {
+      "source_scene": 4,
+      "minimum_sampled_duvet_to_body_clearance_m": 0.07296,
+      "measurement": "Vertical ray samples at cloth vertices; padded smoothed body envelope"
+    },
+    {
+      "source_scene": 5,
+      "minimum_sampled_duvet_to_body_clearance_m": 0.07235,
+      "measurement": "Vertical ray samples at cloth vertices; padded smoothed body envelope"
+    }
+  ],
+  "window": {
+    "whole_sash_travel_m": 3.02,
+    "assembly": "glass, left/right/top/bottom rails, handle share one moving parent"
+  },
   "scenes": [
     {
       "scene": 2,
-      "rendered_source_scene": 2,
+      "source_scene": 2,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 3.58187
+      "maximum_joint_displacement_from_start_m": 2.93692
     },
     {
       "scene": 3,
-      "rendered_source_scene": 3,
+      "source_scene": 3,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 1.39278
+      "maximum_joint_displacement_from_start_m": 1.089
     },
     {
       "scene": 4,
-      "rendered_source_scene": 4,
+      "source_scene": 4,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.00602
+      "maximum_joint_displacement_from_start_m": 0.00229
     },
     {
       "scene": 5,
-      "rendered_source_scene": 5,
+      "source_scene": 5,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.77705
+      "maximum_joint_displacement_from_start_m": 0.60743
     },
     {
       "scene": 6,
-      "rendered_source_scene": 6,
+      "source_scene": 6,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 1.46223
+      "maximum_joint_displacement_from_start_m": 1.08887
     },
     {
       "scene": 7,
-      "rendered_source_scene": 6,
+      "source_scene": 6,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 1.46223
+      "maximum_joint_displacement_from_start_m": 1.08887
     },
     {
       "scene": 8,
-      "rendered_source_scene": 11,
+      "source_scene": 8,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.44228
+      "maximum_joint_displacement_from_start_m": 0.00586
     },
     {
       "scene": 9,
-      "rendered_source_scene": 9,
+      "source_scene": 9,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.00904
+      "maximum_joint_displacement_from_start_m": 0.01201
     },
     {
       "scene": 10,
-      "rendered_source_scene": 4,
+      "source_scene": 4,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.00602
+      "maximum_joint_displacement_from_start_m": 0.00229
     },
     {
       "scene": 11,
-      "rendered_source_scene": 11,
-      "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.44228
+      "source_scene": 11,
+      "characters": 0,
+      "maximum_joint_displacement_from_start_m": 0
     },
     {
       "scene": 12,
-      "rendered_source_scene": 11,
-      "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.44228
+      "source_scene": 11,
+      "characters": 0,
+      "maximum_joint_displacement_from_start_m": 0
     },
     {
       "scene": 13,
-      "rendered_source_scene": 13,
+      "source_scene": 13,
       "characters": 1,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 0.11474
+      "maximum_joint_displacement_from_start_m": 0.03258
     },
     {
       "scene": 14,
-      "rendered_source_scene": 14,
+      "source_scene": 14,
       "characters": 2,
-      "sample_times": [
-        0.0,
-        1.0,
-        3.0,
-        5.0,
-        7.0,
-        9.0,
-        0.0
-      ],
-      "maximum_joint_displacement_m": 1.13012
+      "maximum_joint_displacement_from_start_m": 0.42098
     }
-  ]
+  ],
+  "surface_contact_audit": {
+    "bed_surface_samples": [
+      {
+        "source_scene": 4,
+        "time": 0,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744897365570068
+      },
+      {
+        "source_scene": 4,
+        "time": 0.75,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 4,
+        "time": 1.5,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 4,
+        "time": 2.5,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 4,
+        "time": 4,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 4,
+        "time": 6,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 4,
+        "time": 9,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+      },
+      {
+        "source_scene": 5,
+        "time": 0,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06744897365570068
+      },
+      {
+        "source_scene": 5,
+        "time": 0.75,
+        "leg_surface_vertices_checked": 528,
+        "minimum_cloth_surface_clearance_m": 0.06741845607757568
+      },
+      {
+        "source_scene": 5,
+        "time": 1.5,
+        "leg_surface_vertices_checked": 476,
+        "minimum_cloth_surface_clearance_m": 0.0675206184387207
+      },
+      {
+        "source_scene": 5,
+        "time": 2.5,
+        "leg_surface_vertices_checked": 431,
+        "minimum_cloth_surface_clearance_m": 0.06755208969116211
+      },
+      {
+        "source_scene": 5,
+        "time": 4,
+        "leg_surface_vertices_checked": 431,
+        "minimum_cloth_surface_clearance_m": 0.06755173206329346
+      },
+      {
+        "source_scene": 5,
+        "time": 6,
+        "leg_surface_vertices_checked": 431,
+        "minimum_cloth_surface_clearance_m": 0.06755185127258301
+      },
+      {
+        "source_scene": 5,
+        "time": 9,
+        "leg_surface_vertices_checked": 431,
+        "minimum_cloth_surface_clearance_m": 0.06755197048187256
+      }
+    ],
+    "window_moving_children": [
+      "Actual glass sheet 1",
+      "Handle mounting block",
+      "Handle mounting block.001",
+      "Sash horizontal frame.002",
+      "Sash horizontal frame.003",
+      "Sash vertical frame.002",
+      "Sash vertical frame.003",
+      "Sliding window grip"
+    ]
+  },
+  "display_audit": {
+    "animated_forecast_changed_pixels": 200017,
+    "low_opacity_pixel_fraction": 0.959,
+    "screen_width_growth_between_2_75_and_4_seconds": 50.58,
+    "remote_setting": "outdoor Pohang campus",
+    "remote_inset": "separate live view of home window"
+  }
 }

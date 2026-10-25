@@ -1,13 +1,22 @@
 {
   "product": "LUMINEX",
-  "year": 2035,
-  "file": "LUMINEX_Pohang_2035.mp4",
-  "compatibility_file": "AI_Smart_Window_Pohang.mp4",
-  "both_mp4_files_identical": true,
-  "exists": true,
-  "size_bytes": 53057970,
-  "sha256": "861fd2f53c4f9a7895a8877ae6b600e3c14d21aecba9c7d4fec40f0de82d2bf1",
+  "files": [
+    "LUMINEX_Pohang_2035.mp4",
+    "AI_Smart_Window_Pohang.mp4"
+  ],
+  "identical": true,
   "duration_seconds": 150.0,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "frames": 3600,
+  "size_bytes": 29548870,
+  "sha256": "df5f67314e722ed5a2ca162bd1f0ae04ffbba1733b681de743b68de83d592f1d",
+  "full_decode": "passed",
+  "year": 2035,
+  "exists": true,
+  "faststart": true,
   "video": {
     "codec_name": "h264",
     "width": 1920,
@@ -20,13 +29,11 @@
     "sample_rate": "44100",
     "channels": 2
   },
-  "full_decode": "passed",
   "preview_decode": "passed",
-  "faststart": true,
-  "mp4_title": "LUMINEX — Pohang 2035",
   "source_3d_resolution": "1280x720",
   "source_3d_fps": 12,
   "output_ui_resolution": "1920x1080",
   "scene_transition": "4-frame dissolves at 10-second boundaries",
+  "rendering": "Cycles CPU + albedo/normal-guided OIDN + AgX",
   "assets_attribution": "../production/ATTRIBUTION.md"
 }

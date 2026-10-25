@@ -19,7 +19,7 @@ def verify(folder):
  assert video['r_frame_rate']=='24/1' and int(video['nb_frames'])==3600
  assert abs(float(data['format']['duration'])-150)<.05
  assert audio['codec_name']=='aac' and audio['channels']==2
- subprocess.run(['ffmpeg','-v','error','-threads','1','-i',str(movie),'-f','null','-'],check=True)
+ subprocess.run(['ffmpeg','-v','error','-xerror','-threads','1','-i',str(movie),'-f','null','-'],check=True)
  return {'product':'LUMINEX','files':[movie.name,compat.name],'identical':True,'duration_seconds':float(data['format']['duration']),'resolution':[video['width'],video['height']],'frames':int(video['nb_frames']),'size_bytes':movie.stat().st_size,'sha256':checksum,'full_decode':'passed'}
 
 if __name__=='__main__':

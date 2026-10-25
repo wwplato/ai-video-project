@@ -1,5 +1,8 @@
 """Measure rendered world-space movement and stopped-foot stability."""
 from pathlib import Path
+import sys
+_runtime=Path(__file__).resolve().parent/".runtime/pylibs"
+if _runtime.exists():sys.path.insert(0,str(_runtime))
 import argparse,json
 import numpy as np
 MAPPING={1:1,2:2,3:3,4:4,5:5,6:5,7:7,8:8,9:3,10:10,11:10,12:12,13:13}

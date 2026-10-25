@@ -45,8 +45,14 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None):
  if quad is not None and i not in [1,9,12]:project_ui(im,quad,i,t,occluders)
  if i==12:
   card=Image.new('RGBA',(520,405),(0,0,0,0));cd=ImageDraw.Draw(card);cd.rounded_rectangle((0,0,519,404),radius=18,fill=(5,31,39,157),outline=(159,229,219,180),width=2);text(cd,(21,13),'우리 집 창문  ·  LIVE',23,TEAL,True)
-  if home_frame is not None:card.paste(home_frame.resize((480,270),Image.Resampling.LANCZOS),(20,59))
-  status='원격 연결됨' if t<3.8 else '창문 닫는 중…' if t<6 else '닫힘 · 안전 잠금 완료';text(cd,(23,348),status,25,WHITE,True);im.paste(card,(1340,150),card)
+  if home_frame is not None:
+   home_frame=home_frame.resize((480,270),Image.Resampling.LANCZOS)
+   # The geometry mask keeps foreground furniture clear as the glass darkens.
+   strength=ease((t-6)/1.2)
+   if strength:
+    mask=blackout_coverage().point(lambda value:round(value*strength));home_frame=Image.composite(Image.new('RGB',(480,270),'#03070a'),home_frame,mask)
+   card.paste(home_frame,(20,59))
+  status='원격 연결됨' if t<3.8 else '창문 닫는 중…' if t<6 else '닫힘 · 안전 잠금' if t<7.2 else '닫힘 · 암흑 모드';text(cd,(23,348),status,25,WHITE,True);im.paste(card,(1340,150),card)
  if i==7 and t>5:
   # Show the exterior finish while the articulated resident remains in view.
   k=ease((t-5)/.35);panel=Image.new('RGBA',(510,337),(0,0,0,0));pd=ImageDraw.Draw(panel);pd.rounded_rectangle((1,1,508,335),radius=19,fill=(5,24,33,245),outline=(123,182,184,230),width=2);pd.text((22,12),'OUTSIDE VIEW  ·  프라이버시 썬팅',font=font(19),fill=TEAL);picture=exterior().resize((472,266),Image.Resampling.LANCZOS);panel.paste(picture,(19,51));panel.putalpha(panel.getchannel('A').point(lambda a:round(a*k)));im.paste(panel,(1370+round((1-k)*36),156),panel)
@@ -72,6 +78,8 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None):
   # Source attribution remains legible and travels with the exported film.
   text(d,(1827,1037),'3D: Microsoft Rocketbox (MIT) · Wayfair / Eric Chadwick (CC BY 4.0, CC0)',17,'#afc5c7',anchor='ra')
  return im
+@lru_cache(None)
+def blackout_coverage():return Image.open(ASSETS/'home_blackout_mask.png').convert('L').point(lambda value:255 if value>180 else 0)
 @lru_cache(None)
 def exterior():return Image.open(ASSETS/'privacy.png').convert('RGB')
 @lru_cache(None)
