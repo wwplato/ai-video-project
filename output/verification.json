@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "setting_year": 2035,
   "file": "AI_Smart_Window_Pohang.mp4",
   "programs": [],
@@ -23,44 +23,41 @@
   "format": {
     "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
     "duration": "150.000000",
-    "size": "22788844"
+    "size": "94582903"
   },
-  "sha256": "214908c320cc1ff887b75965f8c3dd21948991149330e20c98bf501ce7b11e17",
+  "sha256": "faff21c964aae2ef29c853e8f360a7739cf43a2a96cf4447413a31bacab7367a",
   "full_decode_check": {
     "command": "ffmpeg -v error -xerror -i output/AI_Smart_Window_Pohang.mp4 -f null -",
     "exit_code": 0,
-    "result": "Passed: entire audio and video decoded without errors."
+    "result": "Passed: full audio and video decoded without errors."
   },
-  "transitions": {
-    "style": "6-frame moving cross-dissolve without dip to black",
-    "duration_seconds": 0.2,
-    "checked_boundary_seconds": 10,
-    "minimum_picture_brightness_0_255": 78.71
+  "visuals": {
+    "style": "Photo-based cinematic motion graphics",
+    "new_photorealistic_assets": 9,
+    "full_frame_layout": true,
+    "camera": "Continuous smooth push-in with scene-specific framing",
+    "glass_effects": [
+      "perspective-shaped blackout",
+      "sliding sash",
+      "animated frosted glass",
+      "weather response"
+    ],
+    "preview": "preview.jpg contains four frames decoded from the final MP4"
   },
-  "window_voice": {
-    "scenes": [
+  "audio": {
+    "window_voice_scenes": [
       5,
       7,
       12
     ],
-    "processing": "Pitch ratio 0.76, shifted formants, EQ and subtle 28ms spatial tail",
-    "scene_7_separate_narrator": true
+    "narrator_and_window_roles_preserved": true,
+    "new_original_score": true,
+    "stereo_mix": true,
+    "voice_ducking": true,
+    "mix_peak": 0.797
   },
-  "voice_pitch_measurement": {
-    "5": {
-      "unprocessed_median_f0_hz": 294.0,
-      "window_median_f0_hz": 241.0,
-      "measured_pitch_ratio": 0.82
-    },
-    "7": {
-      "unprocessed_median_f0_hz": 265.7,
-      "window_median_f0_hz": 219.5,
-      "measured_pitch_ratio": 0.826
-    },
-    "12": {
-      "unprocessed_median_f0_hz": 265.7,
-      "window_median_f0_hz": 208.0,
-      "measured_pitch_ratio": 0.783
-    }
+  "transitions": {
+    "style": "cross-dissolve",
+    "duration_seconds": 0.2
   }
 }
