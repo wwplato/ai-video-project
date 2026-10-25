@@ -30,8 +30,9 @@ def finish():
  for i in range(15):filters.append(f'[{i}:v]null'+(',tpad=stop_mode=clone:stop_duration=0.166667' if i<14 else '')+f',fps=24[v{i}]')
  prev='v0'
  for i in range(1,15):label=f'x{i}';filters.append(f'[{prev}][v{i}]xfade=transition=fade:duration=0.166667:offset={i*10}[{label}]');prev=label
- cmd+=['-filter_complex',';'.join(filters),'-map',f'[{prev}]','-map','15:a:0','-c:v','libx264','-preset','fast','-crf','18','-maxrate','4M','-bufsize','8M','-threads','2','-pix_fmt','yuv420p','-r','24','-c:a','copy','-t','150','-metadata','title=LUMINEX — Pohang 2035','-metadata','comment=Textured rigged 3D animation; Microsoft Rocketbox MIT; Wayfair / Eric Chadwick CC BY 4.0 and CC0','-movflags','+faststart',str(OUT/'AI_Smart_Window_Pohang.mp4')]
- subprocess.run(cmd,check=True);print('FULL_MP4_WRITTEN',flush=True)
+ filters.append(f'[{prev}]fade=t=in:st=0:d=0.25,fade=t=out:st=149.6:d=0.4[final]')
+ cmd+=['-filter_complex',';'.join(filters),'-map','[final]','-map','15:a:0','-c:v','libx264','-preset','fast','-crf','18','-maxrate','4M','-bufsize','8M','-threads','2','-pix_fmt','yuv420p','-r','24','-c:a','copy','-t','150','-metadata','title=LUMINEX — Pohang 2035','-metadata','comment=Textured rigged 3D animation; Microsoft Rocketbox MIT; Wayfair / Eric Chadwick CC BY 4.0 and CC0','-movflags','+faststart',str(OUT/'AI_Smart_Window_Pohang.mp4')]
+ subprocess.run(cmd,check=True);shutil.copy2(OUT/'AI_Smart_Window_Pohang.mp4',OUT/'LUMINEX_Pohang_2035.mp4');print('FULL_MP4_WRITTEN',flush=True)
 def watch():
  
  for i in [0,14]:
@@ -42,7 +43,7 @@ def watch():
    if (P/f'projection_{src:02}.json').exists() and len(list((P/'frames'/f'{src:02}').glob('*.png')))==120:
     if not (P/'masters'/f'{src:02}.mp4').exists():master(src)
     for i,s in MAPPING.items():
-     if s==src:assemble(i,src)
+     if s==src and not (P/'clips'/f'{i:02}.mp4').exists():assemble(i,src)
     waiting.remove(src)
   log=(P/'render_all.log').read_text()
   if 'Traceback' in log:raise RuntimeError(log)

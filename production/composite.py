@@ -41,9 +41,13 @@ def overlays(im,i,t,quad=None,window=None):
    im.paste(rain,(0,0),rain)
  if quad is not None and i!=1:
   name={1:'weather',2:'weather',3:'alarm',4:'weather',5:'weather',6:'schedule',7:'privacy',8:'frost',9:'blackout',10:'weather',11:'warning',12:'phone',13:'energy'}[i]
+  if i==3 and t<1.4:name='alarm_pre'
   touch=project_ui(im,quad,name)
   if i in [2,5,6] and 3.8<t<7.6:
    d=ImageDraw.Draw(im);x,y=touch;r=24;d.ellipse((x-r,y-r,x+r,y+r),fill='#0c2d38',outline=TEAL,width=3);d.arc((x-13,y-13,x+13,y+13),25,330,fill=WHITE,width=2);d.line((x,y-8,x,y+5),fill=WHITE,width=2);pulse=31+3*math.sin(t*5);d.ellipse((x-pulse,y-pulse,x+pulse,y+pulse),outline='#7aaab0',width=1)
+ if i==7 and t>5:
+  # Show the exterior finish while the articulated resident remains in view.
+  k=ease((t-5)/.35);panel=Image.new('RGBA',(510,337),(0,0,0,0));pd=ImageDraw.Draw(panel);pd.rounded_rectangle((1,1,508,335),radius=19,fill=(5,24,33,245),outline=(123,182,184,230),width=2);pd.text((22,12),'OUTSIDE VIEW  ·  프라이버시 썬팅',font=font(19),fill=TEAL);picture=exterior().resize((472,266),Image.Resampling.LANCZOS);panel.paste(picture,(19,51));panel.putalpha(panel.getchannel('A').point(lambda a:round(a*k)));im.paste(panel,(1370+round((1-k)*36),156),panel)
  layer=gradient();im.paste(layer,(0,0),layer);d=ImageDraw.Draw(im)
  # Geometric window mark and restrained wordmark.
  x,y=84,61;d.rounded_rectangle((x,y,x+23,y+32),radius=3,outline=TEAL,width=2);d.line((x+12,y+1,x+12,y+31),fill=TEAL,width=2);d.line((x+1,y+16,x+22,y+16),fill=TEAL,width=2)
@@ -66,6 +70,8 @@ def overlays(im,i,t,quad=None,window=None):
   # Source attribution remains legible and travels with the exported film.
   text(d,(1827,1037),'3D: Microsoft Rocketbox (MIT) · Wayfair / Eric Chadwick (CC BY 4.0, CC0)',17,'#afc5c7',anchor='ra')
  return im
+@lru_cache(None)
+def exterior():return Image.open(ASSETS/'privacy.png').convert('RGB')
 @lru_cache(None)
 def city_image():return Image.open(ASSETS/'city.png').convert('RGB')
 def city_frame(i,t):

@@ -1,0 +1,15 @@
+{
+  "product": "LUMINEX",
+  "narrator": "Supertonic 3 M3",
+  "window_voice": "Supertonic 3 F1",
+  "native_sample_rate": 44100,
+  "voice_effects": "No pitch shifting or echo",
+  "brand_narration_scenes": [
+    3,
+    15
+  ],
+  "other_dialogue_pcm_unchanged": true,
+  "music": "Preserved quiet sampled grand piano and warm pad",
+  "tts_brand_name_asr": "루미 넥스",
+  "duration_seconds": 150
+}

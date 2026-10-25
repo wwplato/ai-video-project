@@ -93,7 +93,8 @@ class Set:
   rug=mat('Boucle rug',(.65,.64,.58),.98);cube('Wool area rug',(.0,-.35,.013),(3.7,2.7,.022),rug,.05)
   cyl('Travertine side table',(-1.9,1.05,.38),.33,.72,self.ivory);cyl('Table brass rim',(-1.9,1.05,.755),.35,.02,self.bronze)
   self.imported('IridescenceLamp.glb',(-1.9,1.05,.77),0,1.2)
-  cyl('Stone pedestal',(2.25,1.1,.42),.26,.84,self.ivory);self.imported('IridescenceLamp.glb',(2.25,1.1,.85),0,.95)
+  if i!=1:cyl('Stone pedestal',(2.25,1.1,.42),.26,.84,self.ivory);self.imported('IridescenceLamp.glb',(2.25,1.1,.85),0,.95)
+  if i==1:self.ordinary_curtains()
   if i in [3,4,9]:self.bed()
   if i in [8,13]:self.imported('SheenChair.glb',(.45,.32,0),0,1)
   if i==12:
@@ -102,6 +103,20 @@ class Set:
    for j in range(3):cube('Notebooks',(-.35,-.75,.84+j*.025),(.34,.25,.024),self.cloth,.007)
   if i==13:
    self.blocks=[cube('Child play block',(-.8+j*.19,-.65,.07),(.13,.13,.13),mat('Toy color'+str(j),c),.015) for j,c in enumerate([(.12,.38,.36),(.68,.39,.12),(.52,.18,.14)])]
+ def ordinary_curtains(self):
+  fabric=mat('Ordinary linen curtains',(.77,.74,.67),.94);self.curtain_data=[]
+  n=fabric.node_tree.nodes;l=fabric.node_tree.links;noise=n.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=160;bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.08;bump.inputs['Distance'].default_value=.002;l.new(noise.outputs['Fac'],bump.inputs['Height']);l.new(bump.outputs[0],n.get('Principled BSDF').inputs['Normal'])
+  for side in [-1,1]:
+   vs=[];fs=[]
+   for j in range(19):
+    for k in range(37):u=k/36;v=j/18;vs.append((0,1.9+.045*math.sin(u*math.pi*18),.15+3.28*v))
+   for j in range(18):
+    for k in range(36):q=j*37+k;fs.append((q,q+1,q+38,q+37))
+   me=bpy.data.meshes.new('Pleated linen');me.from_pydata(vs,[],fs);me.update();o=bpy.data.objects.new('Manual curtain '+str(side),me);bpy.context.collection.objects.link(o);o.data.materials.append(fabric)
+   for f in me.polygons:f.use_smooth=True
+   self.curtain_data.append((o,side))
+  cube('Curtain ceiling track',(-.2,1.92,3.48),(6.3,.08,.055),self.metal,.012)
+  wet=mat('Rainwater on oak',(.09,.13,.14),.08,.25);sphere('Rainwater puddle',(1.3,1.5,.022),(.50,.27,.006),wet)
  def plant(self,pos,h):
   x,y,z=pos;cyl('Ceramic planter',(x,y,.2*h),.22*h,.4*h,self.ivory);stem=mat('Plant stem',(.15,.22,.075),.8);leaf=mat('Leaf wax',(.12,.25,.11),.36)
   for j in range(13):
@@ -182,6 +197,7 @@ class Set:
    for j,o in enumerate(self.lightobjects):o.data.energy=[320,170][j]
    self.sun.data.energy=.4 if storm else .65
   opened=0
+  if i==1:opened=.8
   if i==4:opened=ease((t-3)/2)
   elif i==10:opened=1-ease((t-4)/.7)
   elif i==11:opened=1-ease(t/.8)
@@ -191,7 +207,17 @@ class Set:
   if i in [0,14]:return
   a=self.actor;pos=(.60,.55,0);yaw=0
   if i==1:
-   w=ease(t/5);a.pose('f_walk_neutral',t,pos=(.6-1.5*w,.5-1.7*w,0),yaw=-.65)
+   close=ease((t-5.6)/2.5)
+   for o,side in self.curtain_data:
+    width=.30+(1.4*close if side==1 else 0);left=2.83-width if side==1 else -3.28
+    for j,v in enumerate(o.data.vertices):u=(j%37)/36;v.co.x=left+u*width
+    o.data.update()
+   if t<5:
+    w=ease(t/4.4);a.pose('f_walk_neutral',t,pos=(.6-1.5*w,.5-1.7*w,0),yaw=-.65)
+   else:
+    self.panorama_shader.inputs['Strength'].default_value=.07;self.sun.data.energy=.015
+    for k,o in enumerate(self.lightobjects):o.data.energy=[65,100][k]
+    self.cam.location=(3.4,-4.4,2.4);aim(self.cam,(.65,1.3,1.5));a.pose('f_walk_neutral',t,pos=(2.25-1.4*close,1.35,0),yaw=-math.pi/2,blend=('f_idle_breathe_01',t,ease((t-8.2)/.5)));a.reach('R',(2.55-1.4*close,1.80,1.48),ease((t-5)/.5))
   elif i in [2,5,6]:
    walk=1-ease((t-1.6)/1.0);w=ease(t/2.6);a.pose('f_walk_neutral',t,pos=(.70,.05+.85*w,0),yaw=math.pi-.35,blend=('f_idle_breathe_01',t,1-walk))
    reach=ease((t-3.0)/1.1)*(1-ease((t-7.2)/1.1));a.reach('L',(.52,1.88,1.53),reach);a.head_turn(.05*math.sin(t))

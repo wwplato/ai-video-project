@@ -1,283 +1,32 @@
 {
-  "version": 5,
-  "setting_year": 2035,
-  "file": "AI_Smart_Window_Pohang.mp4",
-  "programs": [],
-  "stream_groups": [],
-  "streams": [
-    {
-      "codec_name": "h264",
-      "width": 1920,
-      "height": 1080,
-      "r_frame_rate": "24/1",
-      "nb_frames": "3600"
-    },
-    {
-      "codec_name": "aac",
-      "sample_rate": "44100",
-      "channels": 2,
-      "r_frame_rate": "0/0",
-      "nb_frames": "6461"
-    }
-  ],
-  "format": {
-    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
-    "duration": "150.000000",
-    "size": "48810474"
-  },
-  "sha256": "0231cfbc3db0a8ffb98f279c4b9563ae8d42ca4294ea59a99f23ab36d9991206",
-  "full_decode_check": {
-    "exit_code": 0,
-    "result": "Entire final film and 30-second motion preview decoded without errors."
-  },
-  "visuals": {
-    "style": "Stylized articulated 3D character animation",
-    "renderer": "Blender 4.3.2",
-    "native_3d_resolution": [
-      1280,
-      720
-    ],
-    "output_resolution": [
-      1920,
-      1080
-    ],
-    "real_joint_animation": true,
-    "pose_verification": "motion_verification.json"
+  "product": "LUMINEX",
+  "year": 2035,
+  "file": "LUMINEX_Pohang_2035.mp4",
+  "compatibility_file": "AI_Smart_Window_Pohang.mp4",
+  "both_mp4_files_identical": true,
+  "exists": true,
+  "size_bytes": 53057970,
+  "sha256": "861fd2f53c4f9a7895a8877ae6b600e3c14d21aecba9c7d4fec40f0de82d2bf1",
+  "duration_seconds": 150.0,
+  "video": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "24/1",
+    "nb_frames": "3600"
   },
   "audio": {
-    "tts_model": "Supertonic 3 int8, 16 inference steps",
-    "native_sample_rate": 44100,
-    "narrator_voice": "M3",
-    "window_voice": "F1",
-    "pitch_shift": false,
-    "echo": false,
-    "music": "Original slow sampled grand piano and warm pad; no percussion",
-    "music_target_lufs": -29.5,
-    "voice_target_lufs": -18.5,
-    "music_duck_db": -7.96,
-    "measured_dialogue_to_music_rms_db": 20.52,
-    "mix_peak": 0.8120768070220947,
-    "duration_seconds": 150.0,
-    "segments": 16,
-    "exact_previous_audio_stream_preserved": true,
-    "aac_packet_sha256": "SHA256=d4cf1a012d40bb6ae1d32613796c540350cd9947b65d67756e71e54bff0e8134"
+    "codec_name": "aac",
+    "sample_rate": "44100",
+    "channels": 2
   },
-  "transitions": {
-    "style": "four-frame cross-dissolve",
-    "duration_seconds": 0.16666666666666666,
-    "scene_boundaries_preserved_seconds": 10
-  },
-  "speech_timing": [
-    {
-      "scene": 1,
-      "role": "narrator",
-      "text": "2035년, 대한민국 포항. 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다.",
-      "spoken_text": "이천삼십오 년, 대한민국 포항. 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다.",
-      "speaker": "M3",
-      "start": 0.4,
-      "end": 6.63,
-      "native_speed": 0.98,
-      "file": "voice_00_0.wav"
-    },
-    {
-      "scene": 2,
-      "role": "narrator",
-      "text": "하지만 우리는 아직도 날씨에 따라 창문을 직접 열고 닫고, 밤마다 커튼을 쳐야 합니다.",
-      "spoken_text": "하지만 우리는 아직도 날씨에 따라 창문을 직접 열고 닫고, 밤마다 커튼을 쳐야 합니다.",
-      "speaker": "M3",
-      "start": 10.4,
-      "end": 15.99,
-      "native_speed": 1.0,
-      "file": "voice_01_0.wav"
-    },
-    {
-      "scene": 3,
-      "role": "narrator",
-      "text": "그래서 탄생한 AI 스마트 윈도우! 날씨와 시간, 생활 패턴을 분석하는 인공지능 창문입니다.",
-      "spoken_text": "그래서 탄생한 에이아이 스마트 윈도우. 날씨와 시간, 생활 패턴을 분석하는 인공지능 창문입니다.",
-      "speaker": "M3",
-      "start": 20.4,
-      "end": 26.75,
-      "native_speed": 1.0,
-      "file": "voice_02_0.wav"
-    },
-    {
-      "scene": 4,
-      "role": "narrator",
-      "text": "아침 7시, 알람이 울립니다. AI는 사용자가 잠에서 깨어났는지 감지합니다.",
-      "spoken_text": "아침 일곱 시, 알람이 울립니다. 에이아이는 사용자가 잠에서 깨어났는지 감지합니다.",
-      "speaker": "M3",
-      "start": 30.4,
-      "end": 35.96,
-      "native_speed": 1.0,
-      "file": "voice_03_0.wav"
-    },
-    {
-      "scene": 5,
-      "role": "window",
-      "text": "좋은 아침입니다! 포항의 날씨는 맑음, 기온은 22도입니다. 환기를 시작합니다.",
-      "spoken_text": "좋은 아침입니다. 포항의 날씨는 맑음, 기온은 이십이 도입니다. 환기를 시작합니다.",
-      "speaker": "F1",
-      "start": 40.4,
-      "end": 47.26,
-      "native_speed": 1.0,
-      "file": "voice_04_0.wav"
-    },
-    {
-      "scene": 6,
-      "role": "narrator",
-      "text": "이제 창문은 스마트 스크린이 됩니다. 날씨와 공기질, 오늘의 정보를 한눈에 확인할 수 있습니다.",
-      "spoken_text": "이제 창문은 스마트 스크린이 됩니다. 날씨와 공기질, 오늘의 정보를 한눈에 확인할 수 있습니다.",
-      "speaker": "M3",
-      "start": 50.4,
-      "end": 56.7,
-      "native_speed": 1.0,
-      "file": "voice_05_0.wav"
-    },
-    {
-      "scene": 7,
-      "role": "window",
-      "text": "오늘 오후 3시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요.",
-      "spoken_text": "오늘 오후 세 시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요.",
-      "speaker": "F1",
-      "start": 60.4,
-      "end": 65.09,
-      "native_speed": 1.1225,
-      "file": "voice_06_0.wav"
-    },
-    {
-      "scene": 7,
-      "role": "narrator",
-      "text": "AI는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다.",
-      "spoken_text": "에이아이는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다.",
-      "speaker": "M3",
-      "start": 65.43,
-      "end": 69.29,
-      "native_speed": 1.1225,
-      "file": "voice_06_1.wav"
-    },
-    {
-      "scene": 8,
-      "role": "narrator",
-      "text": "낮에는 프라이버시 썬팅! 안에서는 바깥 풍경을 즐기면서 외부의 시선은 줄여줍니다.",
-      "spoken_text": "낮에는 프라이버시 썬팅. 안에서는 바깥 풍경을 즐기면서 외부의 시선은 줄여줍니다.",
-      "speaker": "M3",
-      "start": 70.4,
-      "end": 76.11,
-      "native_speed": 1.0,
-      "file": "voice_07_0.wav"
-    },
-    {
-      "scene": 9,
-      "role": "narrator",
-      "text": "저녁이 되면 창문은 반투명 모드로 전환됩니다. 부드러운 빛은 유지하면서 사생활을 보호합니다.",
-      "spoken_text": "저녁이 되면 창문은 반투명 모드로 전환됩니다. 부드러운 빛은 유지하면서 사생활을 보호합니다.",
-      "speaker": "M3",
-      "start": 80.4,
-      "end": 86.68,
-      "native_speed": 1.0,
-      "file": "voice_08_0.wav"
-    },
-    {
-      "scene": 10,
-      "role": "narrator",
-      "text": "잠잘 시간에는 완전 암흑 모드! 커튼 없이도 외부 빛을 완전히 차단해 편안한 수면을 돕습니다.",
-      "spoken_text": "잠잘 시간에는 완전 암흑 모드. 커튼 없이도 외부 빛을 완전히 차단해 편안한 수면을 돕습니다.",
-      "speaker": "M3",
-      "start": 90.4,
-      "end": 96.62,
-      "native_speed": 1.0,
-      "file": "voice_09_0.wav"
-    },
-    {
-      "scene": 11,
-      "role": "narrator",
-      "text": "AI는 실시간 날씨를 분석합니다. 맑을 때는 환기하고, 비나 강풍이 감지되면 창문을 닫습니다.",
-      "spoken_text": "에이아이는 실시간 날씨를 분석합니다. 맑을 때는 환기하고, 비나 강풍이 감지되면 창문을 닫습니다.",
-      "speaker": "M3",
-      "start": 100.4,
-      "end": 106.94,
-      "native_speed": 1.0,
-      "file": "voice_10_0.wav"
-    },
-    {
-      "scene": 12,
-      "role": "window",
-      "text": "태풍 경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다.",
-      "spoken_text": "태풍 경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다.",
-      "speaker": "F1",
-      "start": 110.4,
-      "end": 116.33,
-      "native_speed": 1.0,
-      "file": "voice_11_0.wav"
-    },
-    {
-      "scene": 13,
-      "role": "narrator",
-      "text": "집 밖에서도 걱정하지 마세요. 스마트폰 하나로 언제 어디서나 창문을 제어할 수 있습니다.",
-      "spoken_text": "집 밖에서도 걱정하지 마세요. 스마트폰 하나로 언제 어디서나 창문을 제어할 수 있습니다.",
-      "speaker": "M3",
-      "start": 120.4,
-      "end": 125.8,
-      "native_speed": 1.0,
-      "file": "voice_12_0.wav"
-    },
-    {
-      "scene": 14,
-      "role": "narrator",
-      "text": "어르신부터 어린이까지, 누구나 편리하게! 에너지 절약과 안전을 함께 생각하는 기술입니다.",
-      "spoken_text": "어르신부터 어린이까지, 누구나 편리하게. 에너지 절약과 안전을 함께 생각하는 기술입니다.",
-      "speaker": "M3",
-      "start": 130.4,
-      "end": 136.59,
-      "native_speed": 1.0,
-      "file": "voice_13_0.wav"
-    },
-    {
-      "scene": 15,
-      "role": "narrator",
-      "text": "작은 창문 하나가 우리의 미래를 바꿉니다. 더 편리하고, 더 안전한 내일. AI 스마트 윈도우!",
-      "spoken_text": "작은 창문 하나가 우리의 미래를 바꿉니다. 더 편리하고, 더 안전한 내일. 에이아이 스마트 윈도우.",
-      "speaker": "M3",
-      "start": 140.4,
-      "end": 146.81,
-      "native_speed": 1.0,
-      "file": "voice_14_0.wav"
-    }
-  ],
-  "transcription_spot_checks": {
-    "recognizer": "Whisper base, Korean",
-    "samples": [
-      {
-        "scene": 1,
-        "role": "narrator",
-        "expected": "2035년, 대한민국 포항. 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다.",
-        "recognized": "2035년 대한민국 포항 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다."
-      },
-      {
-        "scene": 5,
-        "role": "window",
-        "expected": "좋은 아침입니다! 포항의 날씨는 맑음, 기온은 22도입니다. 환기를 시작합니다.",
-        "recognized": "좋은 아침입니다. 포항의 날씨는 맑음 기온은 22 도입니다. 환기를 시작합니다."
-      },
-      {
-        "scene": 7,
-        "role": "window",
-        "expected": "오늘 오후 3시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요.",
-        "recognized": "오늘 오후 3시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요."
-      },
-      {
-        "scene": 7,
-        "role": "narrator",
-        "expected": "AI는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다.",
-        "recognized": "AI는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다."
-      },
-      {
-        "scene": 12,
-        "role": "window",
-        "expected": "태풍 경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다.",
-        "recognized": "태풍경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다."
-      }
-    ]
-  }
+  "full_decode": "passed",
+  "preview_decode": "passed",
+  "faststart": true,
+  "mp4_title": "LUMINEX — Pohang 2035",
+  "source_3d_resolution": "1280x720",
+  "source_3d_fps": 12,
+  "output_ui_resolution": "1920x1080",
+  "scene_transition": "4-frame dissolves at 10-second boundaries",
+  "assets_attribution": "../production/ATTRIBUTION.md"
 }
