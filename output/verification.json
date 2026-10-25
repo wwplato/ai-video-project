@@ -1,0 +1,32 @@
+{
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+    {
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "r_frame_rate": "24/1",
+      "nb_frames": "3600"
+    },
+    {
+      "codec_name": "aac",
+      "sample_rate": "44100",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "nb_frames": "6461"
+    }
+  ],
+  "format": {
+    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+    "duration": "150.000000",
+    "size": "6979063"
+  },
+  "file": "AI_Smart_Window_Pohang.mp4",
+  "sha256": "e3d9a391bfb4a332e5d605cdf3c8d9acebae67aec4d679d54688a1296ae979bb",
+  "full_decode_check": {
+    "command": "ffmpeg -v error -xerror -i output/AI_Smart_Window_Pohang.mp4 -f null -",
+    "exit_code": 0,
+    "result": "Passed: full video and audio decoded without errors."
+  }
+}
