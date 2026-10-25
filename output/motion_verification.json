@@ -1,0 +1,319 @@
+{
+  "method": "Blender procedural 3D joint transforms, sampled in world coordinates before rendering",
+  "camera_zoom_is_not_the_person_animation": true,
+  "scene_count": 15,
+  "animated_people_scenes": 13,
+  "frames_per_second": 24,
+  "total_rendered_frames": 3600,
+  "native_3d_resolution": [
+    1280,
+    720
+  ],
+  "output_composition_resolution": [
+    1920,
+    1080
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [],
+      "ocean_wave_height_change_m": 0.0725
+    },
+    {
+      "scene": 2,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 3.1643,
+          "head_extent_m": 3.1643,
+          "left_hand_extent_m": 3.2468,
+          "left_hand_relative_extent_m": 0.2581,
+          "right_hand_extent_m": 3.2468,
+          "right_hand_relative_extent_m": 0.2581,
+          "left_foot_extent_m": 3.2607,
+          "left_foot_relative_extent_m": 0.3669,
+          "right_foot_extent_m": 3.2607,
+          "right_foot_relative_extent_m": 0.3669,
+          "head_rotation_degrees": 6.87
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 1.4984,
+          "head_extent_m": 1.4984,
+          "left_hand_extent_m": 1.9902,
+          "left_hand_relative_extent_m": 0.8414,
+          "right_hand_extent_m": 1.5002,
+          "right_hand_relative_extent_m": 0.1694,
+          "left_foot_extent_m": 1.4995,
+          "left_foot_relative_extent_m": 0.2382,
+          "right_foot_extent_m": 1.4995,
+          "right_foot_relative_extent_m": 0.2382,
+          "head_rotation_degrees": 57.39
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Morning resident",
+          "pelvis_extent_m": 0.5907,
+          "head_extent_m": 1.062,
+          "left_hand_extent_m": 0.5659,
+          "left_hand_relative_extent_m": 0.3409,
+          "right_hand_extent_m": 0.8664,
+          "right_hand_relative_extent_m": 0.4149,
+          "left_foot_extent_m": 1.6574,
+          "left_foot_relative_extent_m": 1.3092,
+          "right_foot_extent_m": 1.6385,
+          "right_foot_relative_extent_m": 1.191,
+          "head_rotation_degrees": 116.11
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Morning resident",
+          "pelvis_extent_m": 1.9494,
+          "head_extent_m": 1.9494,
+          "left_hand_extent_m": 2.9913,
+          "left_hand_relative_extent_m": 1.1866,
+          "right_hand_extent_m": 1.9429,
+          "right_hand_relative_extent_m": 0.5865,
+          "left_foot_extent_m": 2.4558,
+          "left_foot_relative_extent_m": 0.6794,
+          "right_foot_extent_m": 2.3281,
+          "right_foot_relative_extent_m": 0.6419,
+          "head_rotation_degrees": 150.89
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Student",
+          "pelvis_extent_m": 1.4984,
+          "head_extent_m": 1.4984,
+          "left_hand_extent_m": 1.9902,
+          "left_hand_relative_extent_m": 0.8414,
+          "right_hand_extent_m": 1.5002,
+          "right_hand_relative_extent_m": 0.1694,
+          "left_foot_extent_m": 1.4995,
+          "left_foot_relative_extent_m": 0.2382,
+          "right_foot_extent_m": 1.4995,
+          "right_foot_relative_extent_m": 0.2382,
+          "head_rotation_degrees": 57.39
+        }
+      ]
+    },
+    {
+      "scene": 7,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Student",
+          "pelvis_extent_m": 1.4984,
+          "head_extent_m": 1.4984,
+          "left_hand_extent_m": 1.9832,
+          "left_hand_relative_extent_m": 0.8176,
+          "right_hand_extent_m": 1.9297,
+          "right_hand_relative_extent_m": 0.5674,
+          "left_foot_extent_m": 1.4995,
+          "left_foot_relative_extent_m": 0.2382,
+          "right_foot_extent_m": 1.4995,
+          "right_foot_relative_extent_m": 0.2382,
+          "head_rotation_degrees": 57.39
+        }
+      ]
+    },
+    {
+      "scene": 8,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 2.4683,
+          "head_extent_m": 2.4683,
+          "left_hand_extent_m": 2.6099,
+          "left_hand_relative_extent_m": 0.1964,
+          "right_hand_extent_m": 2.6095,
+          "right_hand_relative_extent_m": 0.1964,
+          "left_foot_extent_m": 2.6867,
+          "left_foot_relative_extent_m": 0.2752,
+          "right_foot_extent_m": 2.6867,
+          "right_foot_relative_extent_m": 0.2752,
+          "head_rotation_degrees": 14.31
+        }
+      ]
+    },
+    {
+      "scene": 9,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.4815,
+          "left_hand_relative_extent_m": 0.4815,
+          "right_hand_extent_m": 0.0,
+          "right_hand_relative_extent_m": 0.0,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 2.86
+        }
+      ]
+    },
+    {
+      "scene": 10,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Morning resident",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.36,
+          "left_hand_relative_extent_m": 0.36,
+          "right_hand_extent_m": 0.0,
+          "right_hand_relative_extent_m": 0.0,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 1.72
+        }
+      ]
+    },
+    {
+      "scene": 11,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.2278,
+          "left_hand_relative_extent_m": 0.2278,
+          "right_hand_extent_m": 0.0422,
+          "right_hand_relative_extent_m": 0.0422,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 25.78
+        }
+      ]
+    },
+    {
+      "scene": 12,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Resident",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.0422,
+          "left_hand_relative_extent_m": 0.0422,
+          "right_hand_extent_m": 0.0422,
+          "right_hand_relative_extent_m": 0.0422,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 45.89
+        }
+      ]
+    },
+    {
+      "scene": 13,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Student with phone",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.6467,
+          "left_hand_relative_extent_m": 0.6467,
+          "right_hand_extent_m": 0.0,
+          "right_hand_relative_extent_m": 0.0,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 1.72
+        }
+      ]
+    },
+    {
+      "scene": 14,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [
+        {
+          "name": "Grandmother",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.0,
+          "left_hand_relative_extent_m": 0.0,
+          "right_hand_extent_m": 0.0,
+          "right_hand_relative_extent_m": 0.0,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 5.72
+        },
+        {
+          "name": "Child",
+          "pelvis_extent_m": 0.0,
+          "head_extent_m": 0.0,
+          "left_hand_extent_m": 0.0,
+          "left_hand_relative_extent_m": 0.0,
+          "right_hand_extent_m": 0.557,
+          "right_hand_relative_extent_m": 0.557,
+          "left_foot_extent_m": 0.0,
+          "left_foot_relative_extent_m": 0.0,
+          "right_foot_extent_m": 0.0,
+          "right_foot_relative_extent_m": 0.0,
+          "head_rotation_degrees": 0.0
+        }
+      ]
+    },
+    {
+      "scene": 15,
+      "rendered_frames": 240,
+      "pose_samples": 30,
+      "actors": [],
+      "ocean_wave_height_change_m": 0.0725
+    }
+  ]
+}

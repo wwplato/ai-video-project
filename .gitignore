@@ -1,0 +1,4 @@
+production/frames/
+production/cache/
+production/motion_*.json
+production/__pycache__/

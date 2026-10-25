@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "setting_year": 2035,
   "file": "AI_Smart_Window_Pohang.mp4",
   "programs": [],
@@ -9,8 +9,8 @@
       "codec_name": "h264",
       "width": 1920,
       "height": 1080,
-      "r_frame_rate": "30/1",
-      "nb_frames": "4500"
+      "r_frame_rate": "24/1",
+      "nb_frames": "3600"
     },
     {
       "codec_name": "aac",
@@ -23,26 +23,26 @@
   "format": {
     "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
     "duration": "150.000000",
-    "size": "94511677"
+    "size": "48810474"
   },
-  "sha256": "403644e4a8016cfd847792d44d89d9ab5a0835a53044324663902826d45a0bad",
+  "sha256": "0231cfbc3db0a8ffb98f279c4b9563ae8d42ca4294ea59a99f23ab36d9991206",
   "full_decode_check": {
-    "command": "ffmpeg -v error -xerror -i output/AI_Smart_Window_Pohang.mp4 -f null -",
     "exit_code": 0,
-    "result": "Entire video and audio decoded without errors."
+    "result": "Entire final film and 30-second motion preview decoded without errors."
   },
   "visuals": {
-    "style": "Photo-based cinematic motion graphics",
-    "new_photorealistic_assets": 9,
-    "full_frame_layout": true,
-    "camera": "Continuous smooth push-in with scene-specific framing",
-    "glass_effects": [
-      "perspective-shaped blackout",
-      "sliding sash",
-      "animated frosted glass",
-      "weather response"
+    "style": "Stylized articulated 3D character animation",
+    "renderer": "Blender 4.3.2",
+    "native_3d_resolution": [
+      1280,
+      720
     ],
-    "preview": "preview.jpg contains four frames decoded from the final MP4"
+    "output_resolution": [
+      1920,
+      1080
+    ],
+    "real_joint_animation": true,
+    "pose_verification": "motion_verification.json"
   },
   "audio": {
     "tts_model": "Supertonic 3 int8, 16 inference steps",
@@ -58,11 +58,14 @@
     "measured_dialogue_to_music_rms_db": 20.52,
     "mix_peak": 0.8120768070220947,
     "duration_seconds": 150.0,
-    "segments": 16
+    "segments": 16,
+    "exact_previous_audio_stream_preserved": true,
+    "aac_packet_sha256": "SHA256=d4cf1a012d40bb6ae1d32613796c540350cd9947b65d67756e71e54bff0e8134"
   },
   "transitions": {
-    "style": "cross-dissolve",
-    "duration_seconds": 0.2
+    "style": "four-frame cross-dissolve",
+    "duration_seconds": 0.16666666666666666,
+    "scene_boundaries_preserved_seconds": 10
   },
   "speech_timing": [
     {

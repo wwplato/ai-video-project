@@ -1,24 +1,26 @@
 # AI 스마트 윈도우 – 포항의 내일을 여는 창
 
-2035년 포항을 배경으로 AI 스마트 윈도우의 기능을 설명하는 사진 기반 모션그래픽 영상입니다. 한국어 합성 음성, 자막, 배경음악을 포함합니다.
+2035년 포항을 배경으로 AI 스마트 윈도우를 설명하는 3D 캐릭터 애니메이션입니다. 총 15장면, 2분 30초입니다.
 
-[최신 영상 MP4 다운로드](https://github.com/wwplato/ai-video-project/raw/refs/heads/main/output/AI_Smart_Window_Pohang.mp4) · [음성 미리듣기](https://github.com/wwplato/ai-video-project/raw/refs/heads/main/output/audio_preview.mp3)
+[전체 영상 다운로드](https://github.com/wwplato/ai-video-project/raw/refs/heads/main/output/AI_Smart_Window_Pohang.mp4) · [30초 동작 미리보기](https://github.com/wwplato/ai-video-project/raw/refs/heads/main/output/motion_preview.mp4) · [음성 미리듣기](https://github.com/wwplato/ai-video-project/raw/refs/heads/main/output/audio_preview.mp3)
 
-이번 수정본은 내레이션과 창문 안내를 새 한국어 음성 모델로 다시 합성했습니다. 내레이션은 또렷한 설명형 목소리, 창문은 차분한 안내형 목소리를 사용합니다. 창문 음성의 인위적인 피치 변조와 메아리 효과는 제거했습니다. 문장 사이의 호흡과 음량을 정리하고, 창문 안내 표시와 자막의 타이밍을 새 음성에 맞췄습니다.
+인물의 관절과 자세가 프레임마다 바뀌는 3D 애니메이션으로 제작했습니다. 학생이 걸어가 창을 터치하고, 사용자가 침대에서 상체를 일으켜 일어나며, 아이가 블록을 집어 옮겨 쌓습니다. 휴대폰을 누르는 손가락, 책장을 넘기는 손, 우산을 집는 동작도 포함했습니다. 바다의 파도, 차량, 식물, 커튼과 창문도 움직입니다.
 
-배경음악은 타악기 없는 느린 피아노와 부드러운 패드로 새로 구성했습니다. 실제 그랜드 피아노 샘플을 사용했으며, 대사가 나오는 동안 음악이 부드럽게 약 8dB 낮아지도록 믹싱했습니다.
+미리보기에는 학생의 창문 터치, 기상, 가족의 블록 놀이를 10초씩 담았습니다.
 
-![영상 미리보기](output/preview.jpg)
+![3D 애니메이션 실제 프레임](output/preview.jpg)
 
-영상은 `output/AI_Smart_Window_Pohang.mp4`에 있습니다. 저장소를 다운로드한 뒤 `output/영상보기.html`을 브라우저로 열어도 재생할 수 있습니다.
+기존에 확정한 한국어 내레이션·창문 안내와 잔잔한 피아노 음악의 AAC 오디오 스트림을 그대로 유지했습니다. 오디오 패킷 체크섬의 일치를 확인했습니다.
 
 | 항목 | 검증 결과 |
 | --- | --- |
 | 길이 | 150초 (2분 30초), 15장면 |
-| 영상 | H.264, 1920×1080, 30fps, 4,500프레임 |
-| 음성 | 새 한국어 신경망 음성 2종, AAC 스테레오, 44,100Hz |
-| 음악 | 느린 피아노·패드, 대사 중 자동 음량 조절 |
-| 파일 크기 | 94,511,677바이트 (약 90.13MiB) |
-| 무결성 | 영상·음성 전체 디코딩 성공 |
+| 영상 | H.264, 1920×1080, 24fps, 3,600프레임 |
+| 인물 움직임 | 인물이 등장하는 13장면에서 관절 위치 또는 고개 회전 변화 확인 |
+| 음성·음악 | 기존 AAC 스테레오, 44,100Hz 스트림 유지 |
+| 파일 크기 | 48,810,474바이트 (약 46.55MiB) |
+| 무결성 | 전체 영상 및 동작 미리보기 디코딩 성공 |
 
-음성의 숫자와 핵심 안내 문구를 별도 음성 인식으로 확인했습니다. 검증 정보와 SHA-256 체크섬은 [output/verification.json](output/verification.json)에 기록했습니다.
+영상은 `output/AI_Smart_Window_Pohang.mp4`에 있습니다. 저장소를 내려받아 `output/영상보기.html`을 열어도 재생할 수 있습니다.
+
+검증 기록: [파일·음성 검증](output/verification.json), [3D 관절 움직임 검증](output/motion_verification.json).
