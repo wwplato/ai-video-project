@@ -8,3 +8,9 @@ production/*.log
 production/projection_*.json
 production/sample_*.png
 production/proof_*.jpg
+
+production/.runtime/
+production/raw/
+production/camera_*.json
+production/sample_*.exr
+production/sample_*.json
