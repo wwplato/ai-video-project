@@ -2,3 +2,9 @@ production/frames/
 production/cache/
 production/motion_*.json
 production/__pycache__/
+production/masters/
+production/clips/
+production/*.log
+production/projection_*.json
+production/sample_*.png
+production/proof_*.jpg

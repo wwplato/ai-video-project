@@ -1,0 +1,178 @@
+[
+  {
+    "scene": 1,
+    "role": "narrator",
+    "text": "2035년, 대한민국 포항. 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다.",
+    "spoken_text": "이천삼십오 년, 대한민국 포항. 인공지능과 첨단 기술이 우리의 일상을 바꾸고 있습니다.",
+    "speaker": "M3",
+    "start": 0.4,
+    "end": 6.63,
+    "native_speed": 0.98,
+    "file": "voice_00_0.wav"
+  },
+  {
+    "scene": 2,
+    "role": "narrator",
+    "text": "하지만 우리는 아직도 날씨에 따라 창문을 직접 열고 닫고, 밤마다 커튼을 쳐야 합니다.",
+    "spoken_text": "하지만 우리는 아직도 날씨에 따라 창문을 직접 열고 닫고, 밤마다 커튼을 쳐야 합니다.",
+    "speaker": "M3",
+    "start": 10.4,
+    "end": 15.99,
+    "native_speed": 1.0,
+    "file": "voice_01_0.wav"
+  },
+  {
+    "scene": 3,
+    "role": "narrator",
+    "text": "인공지능 스마트 윈도우, 루미넥스. 날씨와 시간, 생활 패턴을 분석하는 인공지능 창문입니다.",
+    "spoken_text": "인공지능 스마트 윈도우, 루미넥스. 날씨와 시간, 생활 패턴을 분석하는 인공지능 창문입니다.",
+    "speaker": "M3",
+    "start": 20.4,
+    "end": 26.759999999999998,
+    "native_speed": 1.02,
+    "file": "brand_2.wav"
+  },
+  {
+    "scene": 4,
+    "role": "narrator",
+    "text": "아침 7시, 알람이 울립니다. AI는 사용자가 잠에서 깨어났는지 감지합니다.",
+    "spoken_text": "아침 일곱 시, 알람이 울립니다. 에이아이는 사용자가 잠에서 깨어났는지 감지합니다.",
+    "speaker": "M3",
+    "start": 30.4,
+    "end": 35.96,
+    "native_speed": 1.0,
+    "file": "voice_03_0.wav"
+  },
+  {
+    "scene": 5,
+    "role": "window",
+    "text": "좋은 아침입니다! 포항의 날씨는 맑음, 기온은 22도입니다. 환기를 시작합니다.",
+    "spoken_text": "좋은 아침입니다. 포항의 날씨는 맑음, 기온은 이십이 도입니다. 환기를 시작합니다.",
+    "speaker": "F1",
+    "start": 40.4,
+    "end": 47.26,
+    "native_speed": 1.0,
+    "file": "voice_04_0.wav"
+  },
+  {
+    "scene": 6,
+    "role": "narrator",
+    "text": "이제 창문은 스마트 스크린이 됩니다. 날씨와 공기질, 오늘의 정보를 한눈에 확인할 수 있습니다.",
+    "spoken_text": "이제 창문은 스마트 스크린이 됩니다. 날씨와 공기질, 오늘의 정보를 한눈에 확인할 수 있습니다.",
+    "speaker": "M3",
+    "start": 50.4,
+    "end": 56.7,
+    "native_speed": 1.0,
+    "file": "voice_05_0.wav"
+  },
+  {
+    "scene": 7,
+    "role": "window",
+    "text": "오늘 오후 3시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요.",
+    "spoken_text": "오늘 오후 세 시부터 비가 예상됩니다. 외출할 때 우산을 챙기세요.",
+    "speaker": "F1",
+    "start": 60.4,
+    "end": 65.09,
+    "native_speed": 1.1225,
+    "file": "voice_06_0.wav"
+  },
+  {
+    "scene": 7,
+    "role": "narrator",
+    "text": "AI는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다.",
+    "spoken_text": "에이아이는 날씨와 일정을 함께 분석해 필요한 정보를 알려줍니다.",
+    "speaker": "M3",
+    "start": 65.43,
+    "end": 69.29,
+    "native_speed": 1.1225,
+    "file": "voice_06_1.wav"
+  },
+  {
+    "scene": 8,
+    "role": "narrator",
+    "text": "낮에는 프라이버시 썬팅! 안에서는 바깥 풍경을 즐기면서 외부의 시선은 줄여줍니다.",
+    "spoken_text": "낮에는 프라이버시 썬팅. 안에서는 바깥 풍경을 즐기면서 외부의 시선은 줄여줍니다.",
+    "speaker": "M3",
+    "start": 70.4,
+    "end": 76.11,
+    "native_speed": 1.0,
+    "file": "voice_07_0.wav"
+  },
+  {
+    "scene": 9,
+    "role": "narrator",
+    "text": "저녁이 되면 창문은 반투명 모드로 전환됩니다. 부드러운 빛은 유지하면서 사생활을 보호합니다.",
+    "spoken_text": "저녁이 되면 창문은 반투명 모드로 전환됩니다. 부드러운 빛은 유지하면서 사생활을 보호합니다.",
+    "speaker": "M3",
+    "start": 80.4,
+    "end": 86.68,
+    "native_speed": 1.0,
+    "file": "voice_08_0.wav"
+  },
+  {
+    "scene": 10,
+    "role": "narrator",
+    "text": "잠잘 시간에는 완전 암흑 모드! 커튼 없이도 외부 빛을 완전히 차단해 편안한 수면을 돕습니다.",
+    "spoken_text": "잠잘 시간에는 완전 암흑 모드. 커튼 없이도 외부 빛을 완전히 차단해 편안한 수면을 돕습니다.",
+    "speaker": "M3",
+    "start": 90.4,
+    "end": 96.62,
+    "native_speed": 1.0,
+    "file": "voice_09_0.wav"
+  },
+  {
+    "scene": 11,
+    "role": "narrator",
+    "text": "AI는 실시간 날씨를 분석합니다. 맑을 때는 환기하고, 비나 강풍이 감지되면 창문을 닫습니다.",
+    "spoken_text": "에이아이는 실시간 날씨를 분석합니다. 맑을 때는 환기하고, 비나 강풍이 감지되면 창문을 닫습니다.",
+    "speaker": "M3",
+    "start": 100.4,
+    "end": 106.94,
+    "native_speed": 1.0,
+    "file": "voice_10_0.wav"
+  },
+  {
+    "scene": 12,
+    "role": "window",
+    "text": "태풍 경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다.",
+    "spoken_text": "태풍 경보가 발령되었습니다. 창문을 닫고 안전 잠금 모드를 실행합니다.",
+    "speaker": "F1",
+    "start": 110.4,
+    "end": 116.33,
+    "native_speed": 1.0,
+    "file": "voice_11_0.wav"
+  },
+  {
+    "scene": 13,
+    "role": "narrator",
+    "text": "집 밖에서도 걱정하지 마세요. 스마트폰 하나로 언제 어디서나 창문을 제어할 수 있습니다.",
+    "spoken_text": "집 밖에서도 걱정하지 마세요. 스마트폰 하나로 언제 어디서나 창문을 제어할 수 있습니다.",
+    "speaker": "M3",
+    "start": 120.4,
+    "end": 125.8,
+    "native_speed": 1.0,
+    "file": "voice_12_0.wav"
+  },
+  {
+    "scene": 14,
+    "role": "narrator",
+    "text": "어르신부터 어린이까지, 누구나 편리하게! 에너지 절약과 안전을 함께 생각하는 기술입니다.",
+    "spoken_text": "어르신부터 어린이까지, 누구나 편리하게. 에너지 절약과 안전을 함께 생각하는 기술입니다.",
+    "speaker": "M3",
+    "start": 130.4,
+    "end": 136.59,
+    "native_speed": 1.0,
+    "file": "voice_13_0.wav"
+  },
+  {
+    "scene": 15,
+    "role": "narrator",
+    "text": "작은 창문 하나가 우리의 미래를 바꿉니다. 더 편리하고, 더 안전한 내일. 루미넥스.",
+    "spoken_text": "작은 창문 하나가 우리의 미래를 바꿉니다. 더 편리하고, 더 안전한 내일. 루미넥스.",
+    "speaker": "M3",
+    "start": 140.4,
+    "end": 145.49,
+    "native_speed": 1.02,
+    "file": "brand_14.wav"
+  }
+]
