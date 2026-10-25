@@ -1,4 +1,4 @@
-"""Build a 150-second, 15-scene LUMINEX film from ten animated shots."""
+"""Build a 150-second, 15-scene LUMINEX film from eleven animated shots."""
 from pathlib import Path
 import sys
 _runtime=Path(__file__).resolve().parent/".runtime/pylibs"
@@ -18,6 +18,7 @@ def make_city(i):
 def master(src):
  dst=P/'masters'/f'{src:02}.mp4'
  metadata=json.loads((P/f'camera_{src:02}.json').read_text());source_fps=round(1/(metadata[1]['time']-metadata[0]['time']));vf='tpad=stop_mode=clone:stop_duration=0.8,minterpolate=fps=24:mi_mode=mci:mc_mode=obmc:me_mode=bidir:me=epzs:vsbmc=0,scale=1920:1080:flags=lanczos'
+ if src==2:vf='scale=1920:1080:flags=lanczos'
  if src==5:vf="split=2[w][r];[w]trim=end_frame=72,setpts=PTS-STARTPTS[walk];[r]trim=start_frame=72,select='not(mod(n,2))',setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=0.8,minterpolate=fps=24:mi_mode=mci:mc_mode=obmc:me_mode=bidir:me=epzs:vsbmc=0[rest];[walk][rest]concat=n=2:v=1:a=0,tpad=stop_mode=clone:stop_duration=0.8,fps=24,scale=1920:1080:flags=lanczos"
  subprocess.run(['ffmpeg','-y','-v','error','-threads','1','-filter_threads','1','-framerate',str(source_fps),'-start_number','1','-i',str(P/'frames'/f'{src:02}'/'%04d.png'),'-vf',vf,'-frames:v','240','-an','-c:v','libx264','-preset','veryfast','-crf','16','-threads','1','-pix_fmt','yuv420p',str(dst)],check=True)
  print('MASTER_DONE',src,flush=True)
@@ -71,7 +72,7 @@ def watch():
 def render():
  def one(i):
   env=os.environ.copy();env['LP_NUM_THREADS']='1';env['MESA_SHADER_CACHE_DIR']=str(P/'cache');env['OPENBLAS_NUM_THREADS']='1';env['LUMINEX_PYTHON']=sys.executable
-  fps=24 if i in [1,5] else 6 if i in [7,8] else 12
+  fps=24 if i in [1,2,5] else 6 if i in [7,8] else 12
   with (P/f'render_{i:02}.log').open('w') as f:subprocess.run(['blender','-b','-t','1','--factory-startup','--python-exit-code','1','--python',str(P/'scene.py'),'--','--scene',str(i),'--frames',str(fps*10),'--fps',str(fps),'--width','1280','--samples',str(6 if i in [2,12,13] else 4)],env=env,stdout=f,stderr=subprocess.STDOUT,check=True)
  with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(one,sorted(set(MAPPING.values()))))
 if __name__=='__main__':

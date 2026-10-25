@@ -11,8 +11,8 @@
     1080
   ],
   "frames": 3600,
-  "size_bytes": 29548870,
-  "sha256": "df5f67314e722ed5a2ca162bd1f0ae04ffbba1733b681de743b68de83d592f1d",
+  "size_bytes": 32692693,
+  "sha256": "80711d7625d60f088dbe67d22af9e3042d833f1c2bc31d753227db09ca96b39c",
   "full_decode": "passed",
   "year": 2035,
   "exists": true,
@@ -31,9 +31,10 @@
   },
   "preview_decode": "passed",
   "source_3d_resolution": "1280x720",
-  "source_3d_fps": 12,
+  "source_3d_fps": "24 for walking and product camera; 12 or 6 for other motion",
   "output_ui_resolution": "1920x1080",
   "scene_transition": "4-frame dissolves at 10-second boundaries",
   "rendering": "Cycles CPU + albedo/normal-guided OIDN + AgX",
+  "weather": "Distinct typhoon plate; moving-glass droplets; depth-masked rain",
   "assets_attribution": "../production/ATTRIBUTION.md"
 }

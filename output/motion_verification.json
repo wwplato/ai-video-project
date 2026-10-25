@@ -1,24 +1,41 @@
 {
   "product": "LUMINEX",
   "camera_independent_world_space_measurements": true,
-  "source_animation_fps": 12,
   "output_fps": 24,
-  "unique_3d_shots": 10,
-  "character_scene_segments": 11,
+  "unique_3d_shots": 11,
+  "character_scene_segments": 10,
+  "gait": "Cycloidal swings, toe-off and heel-strike pivots, forward knee IK and planted stance contacts",
+  "sampling": "Walking intervals rendered at 24fps; quiet post-walk movement uses 12fps with motion interpolation",
   "walking": [
     {
-      "source_scene": 3,
+      "source_scene": 6,
+      "start_seconds": 0,
+      "stopped_at_seconds": 2.5,
+      "native_walk_fps": 24,
       "forward_motion_monotonic": true,
-      "travel_m": 0.54,
-      "stopped_at_seconds": 1.6,
+      "travel_m": 1.24,
+      "minimum_mesh_height_m": 0.006,
       "maximum_stopped_foot_drift_m": 0.0
     },
     {
-      "source_scene": 6,
+      "source_scene": 2,
+      "start_seconds": 0,
+      "stopped_at_seconds": 4.2,
+      "native_walk_fps": 24,
       "forward_motion_monotonic": true,
-      "travel_m": 0.54,
-      "stopped_at_seconds": 1.6,
+      "travel_m": 2.4793,
+      "minimum_mesh_height_m": 0.006,
       "maximum_stopped_foot_drift_m": 0.0
+    },
+    {
+      "source_scene": 2,
+      "start_seconds": 5,
+      "stopped_at_seconds": 7.6,
+      "native_walk_fps": 24,
+      "forward_motion_monotonic": true,
+      "travel_m": 1.2398,
+      "minimum_mesh_height_m": 0.006,
+      "maximum_stopped_foot_drift_m": 1e-05
     }
   ],
   "bed": [
@@ -33,193 +50,272 @@
       "measurement": "Vertical ray samples at cloth vertices; padded smoothed body envelope"
     }
   ],
-  "window": {
-    "whole_sash_travel_m": 3.02,
-    "assembly": "glass, left/right/top/bottom rails, handle share one moving parent"
-  },
+  "windows": [
+    {
+      "source_scene": 11,
+      "whole_sash_travel_m": 3.02
+    },
+    {
+      "source_scene": 12,
+      "whole_sash_travel_m": 3.02
+    }
+  ],
   "scenes": [
     {
       "scene": 2,
       "source_scene": 2,
       "characters": 1,
-      "maximum_joint_displacement_from_start_m": 2.93692
+      "metadata_fps": 24,
+      "maximum_joint_displacement_from_start_m": 3.1246
     },
     {
       "scene": 3,
       "source_scene": 3,
-      "characters": 1,
-      "maximum_joint_displacement_from_start_m": 1.089
+      "characters": 0,
+      "metadata_fps": 24,
+      "maximum_joint_displacement_from_start_m": 0
     },
     {
       "scene": 4,
       "source_scene": 4,
       "characters": 1,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0.00229
     },
     {
       "scene": 5,
       "source_scene": 5,
       "characters": 1,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0.60743
     },
     {
       "scene": 6,
       "source_scene": 6,
       "characters": 1,
-      "maximum_joint_displacement_from_start_m": 1.08887
+      "metadata_fps": 24,
+      "maximum_joint_displacement_from_start_m": 1.7012
     },
     {
       "scene": 7,
       "source_scene": 6,
       "characters": 1,
-      "maximum_joint_displacement_from_start_m": 1.08887
+      "metadata_fps": 24,
+      "maximum_joint_displacement_from_start_m": 1.7012
     },
     {
       "scene": 8,
       "source_scene": 8,
       "characters": 1,
-      "maximum_joint_displacement_from_start_m": 0.00586
+      "metadata_fps": 6,
+      "maximum_joint_displacement_from_start_m": 0.00575
     },
     {
       "scene": 9,
       "source_scene": 9,
       "characters": 1,
-      "maximum_joint_displacement_from_start_m": 0.01201
+      "metadata_fps": 6,
+      "maximum_joint_displacement_from_start_m": 0.012
     },
     {
       "scene": 10,
       "source_scene": 4,
       "characters": 1,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0.00229
     },
     {
       "scene": 11,
       "source_scene": 11,
       "characters": 0,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0
     },
     {
       "scene": 12,
-      "source_scene": 11,
+      "source_scene": 12,
       "characters": 0,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0
     },
     {
       "scene": 13,
       "source_scene": 13,
       "characters": 1,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0.03258
     },
     {
       "scene": 14,
       "source_scene": 14,
       "characters": 2,
+      "metadata_fps": 12,
       "maximum_joint_displacement_from_start_m": 0.42098
     }
   ],
-  "surface_contact_audit": {
-    "bed_surface_samples": [
+  "architecture_audit": {
+    "closed_room_components": [
       {
-        "source_scene": 4,
-        "time": 0,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744897365570068
+        "name": "Architectural plaster wall",
+        "location": [
+          -3.430000066757202,
+          -2.25,
+          1.9199999570846558
+        ],
+        "dimensions": [
+          0.2199999839067459,
+          9.100000381469727,
+          3.8400001525878906
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 0.75,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+        "name": "Right interior wall",
+        "location": [
+          4.71999979019165,
+          -2.25,
+          1.9199999570846558
+        ],
+        "dimensions": [
+          0.2199999988079071,
+          9.100000381469727,
+          3.8399999141693115
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 1.5,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+        "name": "Rear interior wall",
+        "location": [
+          0.6499999761581421,
+          -6.760000228881836,
+          1.9199999570846558
+        ],
+        "dimensions": [
+          8.350000381469727,
+          0.2199999988079071,
+          3.8399999141693115
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 2.5,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+        "name": "Window wall right return",
+        "location": [
+          3.8299999237060547,
+          2.240000009536743,
+          1.9199999570846558
+        ],
+        "dimensions": [
+          1.7999999523162842,
+          0.2199999988079071,
+          3.8399999141693115
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 4,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+        "name": "Window wall left return",
+        "location": [
+          -3.430000066757202,
+          2.240000009536743,
+          1.9199999570846558
+        ],
+        "dimensions": [
+          0.23999999463558197,
+          0.2199999988079071,
+          3.8399999141693115
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 6,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
+        "name": "Solid lintel above glazing",
+        "location": [
+          -0.20000000298023224,
+          2.240000009536743,
+          3.680000066757202
+        ],
+        "dimensions": [
+          6.349999904632568,
+          0.25,
+          0.4000000059604645
+        ]
       },
       {
-        "source_scene": 4,
-        "time": 9,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744885444641113
-      },
-      {
-        "source_scene": 5,
-        "time": 0,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06744897365570068
-      },
-      {
-        "source_scene": 5,
-        "time": 0.75,
-        "leg_surface_vertices_checked": 528,
-        "minimum_cloth_surface_clearance_m": 0.06741845607757568
-      },
-      {
-        "source_scene": 5,
-        "time": 1.5,
-        "leg_surface_vertices_checked": 476,
-        "minimum_cloth_surface_clearance_m": 0.0675206184387207
-      },
-      {
-        "source_scene": 5,
-        "time": 2.5,
-        "leg_surface_vertices_checked": 431,
-        "minimum_cloth_surface_clearance_m": 0.06755208969116211
-      },
-      {
-        "source_scene": 5,
-        "time": 4,
-        "leg_surface_vertices_checked": 431,
-        "minimum_cloth_surface_clearance_m": 0.06755173206329346
-      },
-      {
-        "source_scene": 5,
-        "time": 6,
-        "leg_surface_vertices_checked": 431,
-        "minimum_cloth_surface_clearance_m": 0.06755185127258301
-      },
-      {
-        "source_scene": 5,
-        "time": 9,
-        "leg_surface_vertices_checked": 431,
-        "minimum_cloth_surface_clearance_m": 0.06755197048187256
+        "name": "Interior ceiling",
+        "location": [
+          0.6499999761581421,
+          -2.240000009536743,
+          3.869999885559082
+        ],
+        "dimensions": [
+          8.399999618530273,
+          9.350000381469727,
+          0.14000000059604645
+        ]
       }
     ],
-    "window_moving_children": [
+    "weather_window_projected_corners_px": [
+      [
+        408.66943359375,
+        151.37874841690063
+      ],
+      [
+        1511.33056640625,
+        151.37874841690063
+      ],
+      [
+        1483.9862823486328,
+        736.4253759384155
+      ],
+      [
+        436.0137176513672,
+        736.4253759384155
+      ]
+    ],
+    "caption_starts_at_y_px": 844,
+    "whole_window_above_caption": true,
+    "moving_sash_children": [
       "Actual glass sheet 1",
-      "Handle mounting block",
-      "Handle mounting block.001",
+      "Continuous horizontal glazing gasket.002",
+      "Continuous horizontal glazing gasket.003",
+      "Continuous vertical glazing gasket.002",
+      "Continuous vertical glazing gasket.003",
+      "Flush handle escutcheon",
+      "Handle engraved LUMINEX",
+      "Handle finger clearance",
+      "Handle return",
+      "Handle return.001",
+      "LUMINEX hardware wordmark",
+      "Polished laminated vertical glass edge.002",
+      "Polished laminated vertical glass edge.003",
+      "Recessed handle pocket",
       "Sash horizontal frame.002",
       "Sash horizontal frame.003",
       "Sash vertical frame.002",
       "Sash vertical frame.003",
-      "Sliding window grip"
+      "Sculpted floating handle",
+      "Second low E glass laminate.001",
+      "Thermal break joint.002",
+      "Thermal break joint.003"
+    ],
+    "macro_handle_center_uv": [
+      0.7107720971107483,
+      0.5340725183486938
     ]
   },
-  "display_audit": {
-    "animated_forecast_changed_pixels": 200017,
-    "low_opacity_pixel_fraction": 0.959,
-    "screen_width_growth_between_2_75_and_4_seconds": 50.58,
-    "remote_setting": "outdoor Pohang campus",
-    "remote_inset": "separate live view of home window"
+  "weather_audit": {
+    "rain_changes_on_interior_pixels": 0,
+    "animated_rain_changed_pixels_between_7_and_7_5_seconds": 28588,
+    "open_window_mask_ids": [
+      0,
+      128,
+      255
+    ],
+    "closed_window_mask_ids": [
+      0,
+      255
+    ],
+    "storm_plate": "storm.png",
+    "weather_and_typhoon_use_distinct_3d_shots": true
+  },
+  "gait_surface_audit": {
+    "fps": 24,
+    "minimum_sole_height_m": 0.005999771105592312,
+    "max_ankle_displacement_per_frame_m": 0.10750749425140825,
+    "maximum_stopped_foot_drift_m": 1.3333208984265686e-07,
+    "travel_m": 1.2400000095367432
   }
 }

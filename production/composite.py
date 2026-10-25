@@ -50,7 +50,10 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather
  if i==7 and t>5:
   # Show the exterior finish while the articulated resident remains in view.
   k=ease((t-5)/.35);panel=Image.new('RGBA',(510,337),(0,0,0,0));pd=ImageDraw.Draw(panel);pd.rounded_rectangle((1,1,508,335),radius=19,fill=(5,24,33,245),outline=(123,182,184,230),width=2);pd.text((22,12),'OUTSIDE VIEW  ·  프라이버시 썬팅',font=font(19),fill=TEAL);picture=exterior().resize((472,266),Image.Resampling.LANCZOS);panel.paste(picture,(19,51));panel.putalpha(panel.getchannel('A').point(lambda a:round(a*k)));im.paste(panel,(1370+round((1-k)*36),156),panel)
- layer=gradient();im.paste(layer,(0,0),layer);d=ImageDraw.Draw(im)
+ layer=gradient()
+ if i==5 and t<3.1:
+  layer=layer.copy();alpha=np.asarray(layer.getchannel('A')).copy();y=np.arange(H);top=np.clip((470-y)/470,0,1)**.55*.82;bottom=np.clip((y-750)/310,0,1)**.8*.88*ease((t-2.65)/.45);alpha[:]=np.maximum(top,bottom)[:,None]*255;layer.putalpha(Image.fromarray(alpha))
+ im.paste(layer,(0,0),layer);d=ImageDraw.Draw(im)
  # Geometric window mark and restrained wordmark.
  x,y=84,61;d.rounded_rectangle((x,y,x+23,y+32),radius=3,outline=TEAL,width=2);d.line((x+12,y+1,x+12,y+31),fill=TEAL,width=2);d.line((x+1,y+16,x+22,y+16),fill=TEAL,width=2)
  text(d,(125,53),'LUMINEX',29,WHITE,True);text(d,(1834,62),f'POHANG 2035   /   {i+1:02d}',22,MUTED,anchor='ra')
@@ -59,15 +62,22 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather
   d.rounded_rectangle((84,116,321,162),radius=20,fill='#163b43',outline='#587e83',width=1);text(d,(104,119),'LUMINEX VOICE',21,TEAL)
   for j in range(10):
    h=4+12*abs(math.sin(t*8+j*.7));xx=345+j*7;d.line((xx,139-h/2,xx,139+h/2),fill=TEAL,width=2)
- title=STORY[i]['headline'];text(d,(96,844+round(12*(1-ease(t/.25)))),title,48,WHITE,True)
- d.line((96,929,167,929),fill=TEAL,width=3)
+ caption=Image.new('RGBA',(W,H));d=ImageDraw.Draw(caption);upper=i==5 and t<2.8;headline_y=182 if upper else 844;subtitle_y=headline_y+109
+ title=STORY[i]['headline'];text(d,(96,headline_y+round(12*(1-ease(t/.25)))),title,48,WHITE,True)
+ d.line((96,headline_y+85,167,headline_y+85),fill=TEAL,width=3)
  cap=active['text'] if active else STORY[i]['narration'];words=cap.split();lines=[];current=''
  for word in words:
   attempt=(current+' '+word).strip()
-  if d.textlength(attempt,font=font(30))>1710:lines.append(current);current=word
+  if d.textlength(attempt,font=font(30))>(1100 if upper else 1710):lines.append(current);current=word
   else:current=attempt
  if current:lines.append(current)
- for j,line in enumerate(lines[:2]):text(d,(97,953+j*43),line,30,MUTED)
+ if upper and len(lines)>1:
+  pairs=[(' '.join(words[:k]),' '.join(words[k:])) for k in range(1,len(words))];pairs=[pair for pair in pairs if all(d.textlength(part,font=font(30))<=1100 for part in pair)]
+  if pairs:lines=list(min(pairs,key=lambda pair:abs(d.textlength(pair[0],font=font(30))-d.textlength(pair[1],font=font(30)))))
+ for j,line in enumerate(lines[:2]):text(d,(97,subtitle_y+j*43),line,30,MUTED)
+ if i==5:
+  opacity=ease((2.8-t)/.15) if upper else ease((t-2.8)/.15);caption.putalpha(caption.getchannel('A').point(lambda value:round(value*opacity)))
+ im.paste(caption,(0,0),caption);d=ImageDraw.Draw(im)
  if i==14:
   # Source attribution remains legible and travels with the exported film.
   text(d,(1827,1037),'3D: Microsoft Rocketbox (MIT) · Wayfair / Eric Chadwick (CC BY 4.0, CC0)',17,'#afc5c7',anchor='ra')

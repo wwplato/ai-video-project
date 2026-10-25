@@ -144,7 +144,7 @@ class BaseSet:
   else:self.cam.location=(4.05,-5.8,2.65);self.target=(-.3,.65,1.5);self.cam.data.lens=39
   self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
  def render(self):
-  s=bpy.context.scene;s.render.engine='BLENDER_EEVEE_NEXT';s.eevee.taa_render_samples=2;s.eevee.use_raytracing=False;s.eevee.shadow_ray_count=1;s.eevee.shadow_step_count=2;s.eevee.shadow_pool_size='256';s.render.resolution_x=1280;s.render.resolution_y=720;s.render.resolution_percentage=100;s.render.fps=12;s.render.image_settings.file_format='PNG';s.render.image_settings.color_mode='RGB';s.render.image_settings.compression=0;s.render.threads_mode='FIXED';s.render.threads=1;s.render.use_persistent_data=True;s.world.color=(.22,.27,.30);s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast'
+  s=bpy.context.scene;s.render.engine='BLENDER_EEVEE_NEXT';s.eevee.taa_render_samples=2;s.eevee.use_raytracing=False;s.eevee.shadow_ray_count=1;s.eevee.shadow_step_count=2;s.eevee.shadow_pool_size='256';s.render.resolution_x=1280;s.render.resolution_y=720;s.render.resolution_percentage=100;s.render.fps=12;s.render.image_settings.file_format='PNG';s.render.image_settings.color_mode='RGB';s.render.image_settings.compression=0;s.render.threads_mode='FIXED';s.render.threads=int(os.environ.get('LUMINEX_RENDER_THREADS','1'));s.render.use_persistent_data=True;s.world.color=(.22,.27,.30);s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast'
  def update(self,t):
   i=self.i
   # Slow camera travel accompanies articulated animation, rather than replacing it.
@@ -305,7 +305,7 @@ class Set(BaseSet):
   if self.i in [10,11]:self.cam.location=(-.2,-5.7,2.2);self.target=(-.2,2.0,1.3);self.cam.data.lens=25;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
   if self.i==12:self.cam.location=(2.2,-3.5,1.95);self.target=(.1,.0,1.18);self.cam.data.lens=49;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
  def render(self):
-  s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=4;s.cycles.use_denoising=False;s.cycles.max_bounces=8;s.cycles.diffuse_bounces=2;s.cycles.glossy_bounces=2;s.cycles.transmission_bounces=6;s.cycles.transparent_max_bounces=8;s.cycles.use_adaptive_sampling=False;s.cycles.use_animated_seed=False;s.cycles.seed=2035;s.cycles.sample_clamp_indirect=3;s.cycles.caustics_reflective=False;s.cycles.caustics_refractive=False;s.render.threads_mode='FIXED';s.render.threads=1;s.render.use_persistent_data=True;s.render.resolution_x=1280;s.render.resolution_y=720;s.render.resolution_percentage=100;s.render.fps=12;s.render.image_settings.file_format='OPEN_EXR_MULTILAYER';s.render.image_settings.color_depth='16';s.render.image_settings.exr_codec='ZIP';s.view_layers[0].use_pass_diffuse_color=False;s.view_layers[0].use_pass_normal=False;s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast';s.render.film_transparent=self.i==12;s.view_layers[0].cycles.denoising_store_passes=True
+  s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=4;s.cycles.use_denoising=False;s.cycles.max_bounces=8;s.cycles.diffuse_bounces=2;s.cycles.glossy_bounces=2;s.cycles.transmission_bounces=6;s.cycles.transparent_max_bounces=8;s.cycles.use_adaptive_sampling=False;s.cycles.use_animated_seed=False;s.cycles.seed=2035;s.cycles.sample_clamp_indirect=3;s.cycles.caustics_reflective=False;s.cycles.caustics_refractive=False;s.render.threads_mode='FIXED';s.render.threads=int(os.environ.get('LUMINEX_RENDER_THREADS','1'));s.render.use_persistent_data=True;s.render.resolution_x=1280;s.render.resolution_y=720;s.render.resolution_percentage=100;s.render.fps=12;s.render.image_settings.file_format='OPEN_EXR_MULTILAYER';s.render.image_settings.color_depth='16';s.render.image_settings.exr_codec='ZIP';s.view_layers[0].use_pass_diffuse_color=False;s.view_layers[0].use_pass_normal=False;s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast';s.render.film_transparent=self.i==12;s.view_layers[0].cycles.denoising_store_passes=True
  def update(self,t):
   i=self.i;self.cam.location=self.camera_base;aim(self.cam,self.target)
   if i!=12:
@@ -328,7 +328,7 @@ class Set(BaseSet):
     for o in self.lightobjects:o.data.color=(1,.86,.70)
    appear=1 if i in [3,9] else ease((t-(.5 if i==2 else 2.9 if i in [5,6] else 0))/.8);self.panel.location.y=2.0-.08*appear;self.panel.scale=(.02+.98*appear,)*3
   if i==2:
-   u=ease(t/3.8);self.cam.location=(1.5+2.3*u,.50-5.0*u,1.65+.71*u);self.cam.data.lens=55-20*u;self.cam.location.x+=.025*max(0,t-3.8);self.cam.location.y-=.025*max(0,t-3.8);aim(self.cam,(2.66-2.76*u,1.98,1.58+.29*u))
+   u=ease(t/3.8);self.cam.location=(1.5+2.3*u,.50-5.0*u,1.65+.71*u);self.cam.data.lens=55-20*u;aim(self.cam,(2.66-2.76*u,1.98,1.58+.29*u))
   if i in [0,14,2,10,11]:return
   a=self.actor
   if i==1:
@@ -390,8 +390,11 @@ def main():
   t=index/a.fps;s.frame_set(index+1);w.update(t);bpy.context.view_layer.update();metadata.append(meta(t));key=None
   if a.scene==5 and index>=72 and index%2==1:
    duplicates[index+1]=index;continue
+  if a.scene==2:key=(tuple(round(x,7) for row in w.cam.matrix_world for x in row),round(w.cam.data.lens,6))
   if a.scene in [10,11]:key=(round(w.sash.location.x,7),round(w.lock_bolt.location.x,6),round(w.storm_mix.inputs[0].default_value,6),tuple(round(x,5) for x in w.state_light_shader.inputs['Color'].default_value))
   if key is not None and key==previous:duplicates[index+1]=previous_index;continue
+  if (out/f'{index+1:04}.png').exists():
+   previous=key;previous_index=index+1;print('FRAME_PNG_CACHED',a.scene,index+1,flush=True);continue
   if (raw/f'{index+1:04}.exr').exists():
    previous=key;previous_index=index+1;print('FRAME_CACHED',a.scene,index+1,flush=True);continue
   s.render.filepath=str(raw/f'{index+1:04}.exr');bpy.ops.render.render(write_still=True);previous=key;previous_index=index+1;print('FRAME_READY',a.scene,index+1,'of',render_frames,flush=True)

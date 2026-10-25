@@ -30,7 +30,7 @@ def render(i,t):
  im=Image.new('RGBA',(W,H),(6,37,46,31));d=ImageDraw.Draw(im);d.line((35,25,1365,25),fill=(166,255,238,120),width=2);d.line((35,825,1365,825),fill=(166,255,238,90),width=2);text(d,(55,50),'LUMINEX',46,WHITE,True);text(d,(1020,64),'POHANG 2035',27,TEAL)
  if i in [2,4,5,10]:
   sub=today(t,i==10 and t>3.8)
-  if i==5:
+  if i in [2,5]:
    u=ease((t-4.1)/1);container=Image.new('RGBA',(W,610));container.alpha_composite(sub,(0,-round(u*630)));container.alpha_composite(week(t),(0,round((1-u)*630)));sub=container
   im.alpha_composite(sub,(0,170))
  elif i==6:
