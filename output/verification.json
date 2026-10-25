@@ -1,13 +1,16 @@
 {
+  "version": 2,
+  "setting_year": 2035,
+  "file": "AI_Smart_Window_Pohang.mp4",
   "programs": [],
   "stream_groups": [],
   "streams": [
     {
       "codec_name": "h264",
-      "width": 1280,
-      "height": 720,
-      "r_frame_rate": "24/1",
-      "nb_frames": "3600"
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "30/1",
+      "nb_frames": "4500"
     },
     {
       "codec_name": "aac",
@@ -20,13 +23,44 @@
   "format": {
     "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
     "duration": "150.000000",
-    "size": "6979063"
+    "size": "22788844"
   },
-  "file": "AI_Smart_Window_Pohang.mp4",
-  "sha256": "e3d9a391bfb4a332e5d605cdf3c8d9acebae67aec4d679d54688a1296ae979bb",
+  "sha256": "214908c320cc1ff887b75965f8c3dd21948991149330e20c98bf501ce7b11e17",
   "full_decode_check": {
     "command": "ffmpeg -v error -xerror -i output/AI_Smart_Window_Pohang.mp4 -f null -",
     "exit_code": 0,
-    "result": "Passed: full video and audio decoded without errors."
+    "result": "Passed: entire audio and video decoded without errors."
+  },
+  "transitions": {
+    "style": "6-frame moving cross-dissolve without dip to black",
+    "duration_seconds": 0.2,
+    "checked_boundary_seconds": 10,
+    "minimum_picture_brightness_0_255": 78.71
+  },
+  "window_voice": {
+    "scenes": [
+      5,
+      7,
+      12
+    ],
+    "processing": "Pitch ratio 0.76, shifted formants, EQ and subtle 28ms spatial tail",
+    "scene_7_separate_narrator": true
+  },
+  "voice_pitch_measurement": {
+    "5": {
+      "unprocessed_median_f0_hz": 294.0,
+      "window_median_f0_hz": 241.0,
+      "measured_pitch_ratio": 0.82
+    },
+    "7": {
+      "unprocessed_median_f0_hz": 265.7,
+      "window_median_f0_hz": 219.5,
+      "measured_pitch_ratio": 0.826
+    },
+    "12": {
+      "unprocessed_median_f0_hz": 265.7,
+      "window_median_f0_hz": 208.0,
+      "measured_pitch_ratio": 0.783
+    }
   }
 }
