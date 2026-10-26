@@ -6,7 +6,7 @@ if _runtime.exists():sys.path.insert(0,str(_runtime))
 import subprocess,os,sys,json,time,concurrent.futures,shutil,argparse
 from PIL import Image
 import numpy as np
-from composite import overlays,city_frame,W,H
+from composite import overlays,city_frame,W,H,pane_screen_quad,ease,load_character_mask
 P=Path(__file__).resolve().parent;ROOT=P;OUT=ROOT.parent/'output';FPS=24
 MAPPING={1:1,2:2,3:3,4:4,5:5,6:5,7:7,8:8,9:3,10:10,11:11,12:12,13:13}
 P.joinpath('clips').mkdir(exist_ok=True);P.joinpath('masters').mkdir(exist_ok=True)
@@ -35,7 +35,16 @@ def assemble(i,src):
   weather_mask=None;weather_panes=None
   if i in [1,10,11]:
    weather_mask=Image.open(P/'weather_masks'/f'{src:02}'/f'{min(len(metadata),round(at)+1):04}.png');weather_panes=np.array(metadata[j]['weather_panes'])*(1-w)+np.array(metadata[k]['weather_panes'])*w
-  im=overlays(im,i,f/24,quad,occluders=hands.tolist(),home_frame=home_frame,weather_mask=weather_mask,weather_panes=weather_panes);proc.stdin.write(im.tobytes())
+  all_panes=np.array(metadata[j]['weather_panes'])*(1-w)+np.array(metadata[k]['weather_panes'])*w if metadata[j]['weather_panes'] else None;right_quad=pane_screen_quad(all_panes[1]) if all_panes is not None and len(all_panes)>1 else None
+  sash=(metadata[j].get('sliding_sash_x') or 0)*(1-w)+(metadata[k].get('sliding_sash_x') or 0)*w;right_visibility=1-ease(abs(sash)/(3.02*.45))
+  if src==5:right_visibility*=ease((source_time-2.9)/.8)
+  elif src not in [2,3]:right_visibility*=ease(source_time/.8)
+  body_mask=None;mask_path=P/'character_masks'/f'{src:02}'/f'{j+1:04}.png'
+  if mask_path.exists():
+   from PIL import ImageChops
+   body_mask=ImageChops.lighter(load_character_mask(str(mask_path)),load_character_mask(str(P/'character_masks'/f'{src:02}'/f'{k+1:04}.png')))
+   if (P/f'room_mask_{src:02}.png').exists():body_mask=ImageChops.lighter(body_mask,load_character_mask(str(P/f'room_mask_{src:02}.png')))
+  im=overlays(im,i,f/24,quad,right_quad=right_quad,right_visibility=right_visibility,body_mask=body_mask,occluders=hands.tolist(),home_frame=home_frame,weather_mask=weather_mask,weather_panes=weather_panes);proc.stdin.write(im.tobytes())
   if f in [24,48,96,120,168,192,216]:im.save(P/f'proof_{i:02}_{f:03}.jpg',quality=95)
  proc.stdin.close();assert proc.wait()==0;inp.stdout.close();assert inp.wait()==0
  if home:home.stdout.close();assert home.wait()==0
@@ -69,6 +78,11 @@ def watch():
   if 'Traceback' in log:raise RuntimeError(log)
   if waiting:time.sleep(5)
  finish()
+def render_masks():
+ def one(src):
+  env={**os.environ,'LP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','EGL_PLATFORM':'surfaceless'}
+  with (P/f'masks_{src:02}.log').open('w') as log:subprocess.run(['blender','-b','-t','1','--factory-startup','--python-exit-code','1','--python',str(P/'render_character_masks.py'),'--','--scene',str(src)],env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+ with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(one,[3,4,5,7,8,13]))
 def render():
  def one(i):
   env=os.environ.copy();env['LP_NUM_THREADS']='1';env['MESA_SHADER_CACHE_DIR']=str(P/'cache');env['OPENBLAS_NUM_THREADS']='1';env['LUMINEX_PYTHON']=sys.executable
@@ -79,7 +93,7 @@ if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--watch',action='store_true');args=parser.parse_args()
  if args.watch:watch()
  else:
-  render();make_city(0);make_city(14)
+  render();render_masks();make_city(0);make_city(14)
   for src in [5,4,8,10,11,12,7,13,2,3,1]:
    master(src)
    for i,s in MAPPING.items():

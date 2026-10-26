@@ -19,3 +19,7 @@ production/weather_masks/
 production/camera_progress_*.json
 
 production/foreground/
+
+production/character_masks/
+
+production/room_mask_*.png

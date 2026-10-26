@@ -11,8 +11,8 @@
     1080
   ],
   "frames": 3600,
-  "size_bytes": 32598311,
-  "sha256": "71b4cb18617e9ee6447be996efd48bb5141a089cb15202ddd3cb3eaf8f2fa12f",
+  "size_bytes": 35438409,
+  "sha256": "77bfbbaad2c0d5a47ec97b1c7d82176e715439e541920583c6620e7dafe6c4ef",
   "full_decode": "passed",
   "year": 2035,
   "exists": true,
@@ -38,6 +38,9 @@
   "weather": "Distinct typhoon plate; moving-glass droplets; depth-masked rain",
   "assets_attribution": "../production/ATTRIBUTION.md",
   "remote_location": "Pohang Hwanho Park Space Walk concept recreation",
-  "gait_revision": "Alternating passing feet, balanced hips and bounded vertical motion",
+  "gait_revision": "Alternating passing feet; longer natural curtain walk",
+  "screens": "Two glass-aligned displays with body and hand occlusion",
+  "curtain": "Center-closing pair; 8 cm final gap",
+  "bedding": "Lower blanket relief, relaxed limbs and visible supported head",
   "night_walls": "Wider bedroom and curtain camera views with independent wall-wash lighting"
 }

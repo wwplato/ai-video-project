@@ -1,7 +1,7 @@
 from pathlib import Path
 from functools import lru_cache
 import json,math,sys,os,subprocess,random
-from PIL import Image,ImageDraw,ImageFont,ImageEnhance
+from PIL import Image,ImageDraw,ImageFont,ImageEnhance,ImageChops,ImageFilter
 import numpy as np
 P=Path(__file__).resolve().parent;ROOT=P
 ASSETS=ROOT/'assets';TEX=ROOT/'textures';W,H=1920,1080;FPS=24
@@ -15,28 +15,34 @@ def ease(t):t=max(0,min(1,t));return t*t*(3-2*t)
 def gradient():
  im=Image.new('RGBA',(W,H),(0,0,0,0));a=np.zeros((H,W,4),dtype=np.uint8);a[:,:,:3]=[2,14,24]
  y=np.arange(H);bottom=np.clip((y-750)/310,0,1)**.8*.88;top=np.clip((210-y)/210,0,1)*.55;a[:,:,3]=np.maximum(bottom,top)[:,None]*255;return Image.fromarray(a)
-from hud import render as render_hud
-def project_ui(im,quad,i,t,occluders=None):
+from hud import render as render_hud,render_right
+def project_ui(im,quad,i,t,occluders=None,side="left",opacity=1,body_mask=None):
  points=np.array(quad,dtype=np.float64)*[W,H];width=max(128,int(max(np.linalg.norm(points[1]-points[0]),np.linalg.norm(points[2]-points[3]))/32+1)*32);height=round(width*850/1400);src=np.array([[0,height],[width,height],[width,0],[0,0]],dtype=np.float64);A=[];B=[]
  for (x,y),(u,v) in zip(points,src):A.extend([[x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]]);B.extend([u,v])
- coeff=np.linalg.solve(np.array(A),np.array(B));source=render_hud(i,t).resize((width,height),Image.Resampling.LANCZOS)
+ coeff=np.linalg.solve(np.array(A),np.array(B));source=(render_right(i,t) if side=="right" else render_hud(i,t)).resize((width,height),Image.Resampling.LANCZOS)
+ if opacity<1:source.putalpha(source.getchannel("A").point(lambda a:round(a*opacity)))
  if i==2:source.putalpha(source.getchannel('A').point(lambda value:round(value*ease((t-2.7)/.7))))
- tile=source.transform((W,H),Image.Transform.PERSPECTIVE,coeff,resample=Image.Resampling.BICUBIC)
- if occluders:
-  mask=Image.new('L',(W,H),255);d=ImageDraw.Draw(mask)
-  for points in occluders:
+ bx=max(0,math.floor(points[:,0].min())-4);by=max(0,math.floor(points[:,1].min())-4);ex=min(W,math.ceil(points[:,0].max())+4);ey=min(H,math.ceil(points[:,1].max())+4)
+ if ex<=bx or ey<=by:return
+ a,b,c,d,e,f,g,h=coeff;den=g*bx+h*by+1
+ shifted=(a/den,b/den,(a*bx+b*by+c)/den,d/den,e/den,(d*bx+e*by+f)/den,g/den,h/den)
+ tile=Image.new('RGBA',(W,H));tile.paste(source.transform((ex-bx,ey-by),Image.Transform.PERSPECTIVE,shifted,resample=Image.Resampling.BICUBIC),(bx,by))
+ if occluders or body_mask is not None:
+  mask=ImageChops.invert(body_mask) if body_mask is not None else Image.new('L',(W,H),255);d=ImageDraw.Draw(mask)
+  for points in (occluders or []):
    p=[(x*W,y*H) for x,y in points];d.line(p,fill=0,width=10)
    for x,y in p:d.ellipse((x-5,y-5,x+5,y+5),fill=0)
-  from PIL import ImageChops
   tile.putalpha(ImageChops.multiply(tile.getchannel('A'),mask))
  im.paste(tile,(0,0),tile)
-def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather_panes=None,weather_mask=None):
+def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather_panes=None,weather_mask=None,right_quad=None,right_visibility=0,body_mask=None):
  im=im.convert('RGB')
+ if body_mask is not None:body_mask=normalise_mask(body_mask).resize((W,H),Image.Resampling.LANCZOS).filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(.7))
  if i==8:im=Image.blend(im,Image.new('RGB',im.size,'#b67942'),.025)
  if i in [1,10,11] and weather_mask is not None:
   from rain import apply as apply_rain
   im=apply_rain(im,i,t,[] if weather_panes is None else weather_panes,weather_mask)
- if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders)
+ if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders,body_mask=body_mask)
+ if right_quad is not None and right_visibility>.001 and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,right_quad,i,t,occluders,side="right",opacity=right_visibility,body_mask=body_mask)
  if i==12:
   location=Image.new('RGBA',(W,H));ld=ImageDraw.Draw(location);ld.rounded_rectangle((84,169,594,221),radius=19,fill=(5,31,39,156));text(ld,(104,176),'포항 환호공원 · 스페이스워크',26,TEAL,True);im.paste(location,(0,0),location)
   card=Image.new('RGBA',(520,405),(0,0,0,0));cd=ImageDraw.Draw(card);cd.rounded_rectangle((0,0,519,404),radius=18,fill=(5,31,39,157),outline=(159,229,219,180),width=2);text(cd,(21,13),'우리 집 창문  ·  LIVE',23,TEAL,True)
@@ -97,3 +103,21 @@ def city_frame(i,t):
   im=ImageEnhance.Brightness(im).enhance(.5);d=ImageDraw.Draw(im);cx=960;cy=290;w=76;d.rounded_rectangle((cx-w/2,cy-57,cx+w/2,cy+57),radius=8,outline=TEAL,width=4);d.line((cx,cy-54,cx,cy+54),fill=TEAL,width=3);d.line((cx-w/2+3,cy,cx+w/2-3,cy),fill=TEAL,width=3)
   text(d,(960,387),'LUMINEX',148,WHITE,True,'mt');text(d,(960,588),'창문을 넘어, 미래를 열다.',49,TEAL,True,'mt');text(d,(960,691),'AI SMART WINDOW  ·  POHANG 2035',25,MUTED,anchor='mt')
  return overlays(im,i,t)
+
+
+def pane_screen_quad(pane):
+ """Project a 2.8m x 1.7m screen inside the actual moving glass pane."""
+ q=np.asarray(pane,dtype=float);unit=[(0,0),(1,0),(1,1),(0,1)];a=[];b=[]
+ for (u,v),(x,y) in zip(unit,q):a.extend([[u,v,1,0,0,0,-x*u,-x*v],[0,0,0,u,v,1,-y*u,-y*v]]);b.extend([x,y])
+ h=np.append(np.linalg.solve(np.asarray(a),np.asarray(b)),1).reshape(3,3);points=[]
+ for u,v in [(.04,.30625),(.96,.30625),(.96,.8375),(.04,.8375)]:
+  z=h@np.array([u,v,1]);points.append((z[:2]/z[2]).tolist())
+ return points
+
+
+def normalise_mask(mask):
+ a=np.asarray(mask);threshold=32767 if a.max()>255 else 127
+ return Image.fromarray(np.uint8(a>threshold)*255)
+@lru_cache(8)
+def load_character_mask(path):
+ return normalise_mask(Image.open(path))

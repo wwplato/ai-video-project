@@ -258,7 +258,7 @@ class Set(BaseSet):
   self.lock_bolt=cube('Positive safety locking bolt',(2.87,1.87,1.25),(.06,.03,.023),self.bronze,.004);self.lock_bolt.hide_render=self.i not in [10,11]
   self.panel=self.screen('window',(-1.70,1.94,2.03),(2.80,1.70));self.rain=[]
  def bed(self):
-  cube('Upholstered bed base',(.3,.18,.30),(1.65,2.5,.45),self.cloth,.12);cube('Linen mattress',(.3,.18,.55),(1.62,2.40,.25),self.ivory,.12);cube('Soft headboard',(.3,1.47,.85),(1.85,.16,1.25),self.cloth,.10);sphere('Compressible pillow',(.3,1.04,.72),(.66,.34,.045),self.ivory)
+  cube('Upholstered bed base',(.3,.18,.30),(1.65,2.5,.45),self.cloth,.12);cube('Linen mattress',(.3,.18,.55),(1.62,2.40,.25),self.ivory,.12);cube('Soft headboard',(.3,1.47,.85),(1.85,.16,1.25),self.cloth,.10);sphere('Compressible pillow',(.3,1.04,.735),(.66,.34,.06),self.ivory)
   self.duvet_verts=[];faces=[];self.duvet_nx=43;self.duvet_ny=43
   for j in range(self.duvet_ny):
    for k in range(self.duvet_nx):self.duvet_verts.append((-.49+k*1.58/(self.duvet_nx-1),-1+j*1.72/(self.duvet_ny-1),.78))
@@ -272,26 +272,32 @@ class Set(BaseSet):
   from mathutils.bvhtree import BVHTree
   dg=bpy.context.evaluated_depsgraph_get();verts=[];faces=[]
   for ob in self.actor.meshes:
-   ev=ob.evaluated_get(dg);me=ev.to_mesh();offset=len(verts);verts.extend([ev.matrix_world@v.co for v in me.vertices]);faces.extend([tuple(offset+k for k in p.vertices) for p in me.polygons]);ev.to_mesh_clear()
-  # Use a padded height envelope, not independent point contacts.  Cloth
-  # triangles between sample points must also clear knees, shins and shoes.
-  n=self.duvet_nx;m=self.duvet_ny;upper=.72-.62*pull;dx=1.58/(n-1);dy=(upper+1)/(m-1)
-  base=[[.705 for k in range(n)] for row in range(m)]
+   ev=ob.evaluated_get(dg);me=ev.to_mesh();offset=len(verts);verts.extend(ev.matrix_world@v.co for v in me.vertices);faces.extend(tuple(offset+k for k in p.vertices) for p in me.polygons);ev.to_mesh_clear()
+  n=self.duvet_nx;m=self.duvet_ny;upper=.56-.56*pull;dx=1.58/(n-1);dy=(upper+1)/(m-1);base=[[.705 for k in range(n)] for row in range(m)]
   for v in verts:
    if v.z<.675:continue
    k=round((v.x+.49)/dx);row=round((v.y+1)/dy)
-   if 0<=k<n and 0<=row<m:base[row][k]=max(base[row][k],v.z+.07)
-  # Dilate support over 10 cm, then smooth the envelope into broad folds.
-  height=[[max(base[r][c] for r in range(max(0,j-4),min(m,j+5)) for c in range(max(0,k-3),min(n,k+4))) for k in range(n)] for j in range(m)]
-  for iteration in range(4):
-   height=[[max(base[j][k],sum(height[r][c] for r in range(max(0,j-1),min(m,j+2)) for c in range(max(0,k-1),min(n,k+2)))/((min(m,j+2)-max(0,j-1))*(min(n,k+2)-max(0,k-1)))) for k in range(n)] for j in range(m)]
-  self.cloth_clearance=100;bvh=BVHTree.FromPolygons(verts,faces)
+   if 0<=k<n and 0<=row<m:base[row][k]=max(base[row][k],v.z+.04)
+  def supported_height():
+   height=[[max(base[r][c] for r in range(max(0,j-2),min(m,j+3)) for c in range(max(0,k-2),min(n,k+3))) for k in range(n)] for j in range(m)]
+   for iteration in range(3):height=[[max(base[j][k],sum(height[r][c] for r in range(max(0,j-1),min(m,j+2)) for c in range(max(0,k-1),min(n,k+2)))/((min(m,j+2)-max(0,j-1))*(min(n,k+2)-max(0,k-1)))) for k in range(n)] for j in range(m)]
+   return height
+  def apply_height(height):
+   for j,v in enumerate(self.duvet.data.vertices):
+    k=j%n;row=j//n;a=row/(m-1);x=-.49+k/(n-1)*1.58;y=-1+(upper+1)*a;z=height[row][k]+.002*math.sin(x*39+y*27)+.015*pull*math.exp(-((a-.91)/.065)**2);v.co=(x,y,z)
+  apply_height(supported_height());bvh=BVHTree.FromPolygons(verts,faces);hits=[];self.cloth_support_corrected=False
+  # Sample the actual triangles: a surface can pass through a cloth cell
+  # without putting any body vertex in that cell's original support bin.
   for j,v in enumerate(self.duvet.data.vertices):
-   k=j%n;row=j//n;u=k/(n-1);a=row/(m-1);x=-.49+u*1.58;y=-1+(upper+1)*a
-   z=height[row][k]+.003*math.sin(x*39+y*27)+.035*pull*math.exp(-((a-.91)/.065)**2)
-   v.co=(x,y,z);hit=bvh.ray_cast(Vector((x,y,2.5)),Vector((0,0,-1)),2.5)
-   if hit[0] is not None and hit[0].z>.675:self.cloth_clearance=min(self.cloth_clearance,z-hit[0].z)
-  self.duvet.data.update()
+   hit=bvh.ray_cast(Vector((v.co.x,v.co.y,2.5)),Vector((0,0,-1)),2.5);z=hit[0].z if hit[0] is not None and hit[0].z>.675 else None;hits.append(z)
+   if z is not None and v.co.z-z<.035:base[j//n][j%n]=max(base[j//n][j%n],z+.04);self.cloth_support_corrected=True
+  for face in self.duvet.data.polygons:
+   c=sum((self.duvet.data.vertices[k].co for k in face.vertices),Vector())/len(face.vertices);hit=bvh.ray_cast(Vector((c.x,c.y,2.5)),Vector((0,0,-1)),2.5)
+   if hit[0] is not None and hit[0].z>.675 and c.z-hit[0].z<.025:
+    for k in face.vertices:base[k//n][k%n]=max(base[k//n][k%n],hit[0].z+.04)
+    self.cloth_support_corrected=True
+  if self.cloth_support_corrected:apply_height(supported_height())
+  self.cloth_clearance=min((self.duvet.data.vertices[k].co.z-z for k,z in enumerate(hits) if z is not None),default=100);self.duvet.data.update()
  def lights(self):
   super().lights();s=bpy.context.scene;s.world.use_nodes=True;s.world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.67,.77,.95,1);s.world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.22;self.sun.data.angle=.07
   for o in self.lightobjects:o.data.use_shadow=True;o.data.specular_factor=0.0;o.visible_glossy=False;o.visible_transmission=False;o.visible_camera=False
@@ -299,6 +305,8 @@ class Set(BaseSet):
    self.wall_wash=[]
    for loc,target,energy in [((-2.92,1.0,2.75),(-3.42,1.25,1.65),22),((3.35,1.0,2.75),(3.95,2.10,1.8),18)]:
     bpy.ops.object.light_add(type='AREA',location=loc);light=bpy.context.object;light.name='Night wall wash';light.data.energy=energy;light.data.color=(1,.78,.52);light.data.shape='DISK';light.data.size=1.25;light.visible_glossy=False;light.visible_camera=False;light.data.specular_factor=0;aim(light,target);self.wall_wash.append(light)
+  if self.i in [3,4,9]:
+   bpy.ops.object.light_add(type='AREA',location=(.3,.95,2.35));light=bpy.context.object;light.name='Soft pillow reading light';light.data.energy=8;light.data.color=(1,.79,.57);light.data.size=.6;light.visible_glossy=False;light.visible_camera=False;light.data.specular_factor=0;aim(light,(.3,1.0,.85))
   if self.i==12:self.sun.rotation_euler=(.55,-.45,-.6);self.sun.data.energy=1.3
  def actors(self):
   if self.i in [2,10,11]:self.people=[];self.actor=None;return
@@ -346,9 +354,9 @@ class Set(BaseSet):
    else:
     self.panorama_shader.inputs['Strength'].default_value=.045;self.sun.data.energy=.01
     for k,o in enumerate(self.lightobjects):o.data.energy=[55,85][k]
-    a.walk(max(0,t-5),2.6,(.8,1.48),-math.pi/2,2,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
+    a.walk(max(0,t-5),4.2,(-.45,1.48),-math.pi/2,4,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
     for o,side in self.curtain_data:
-     left=a.root.location.x+.27 if side==1 else -3.28;width=2.83-left if side==1 else .30
+     left=a.root.location.x+.27 if side==1 else -3.28;draw=ease((t-5)/4.2);width=2.83-left if side==1 else .30+2.72*draw
      for j,v in enumerate(o.data.vertices):v.co.x=left+(j%37)/36*width
      o.data.update()
   elif i in [2,5,6]:
@@ -356,7 +364,7 @@ class Set(BaseSet):
   elif i in [3,4,9]:
    rise=ease((t-1.5)/3.5) if i==4 else 0;a.sleep_pose(t,rise);pull=ease((t-.7)/1.3) if i==4 else 0
    for side,sign in [('L',1),('R',-1)]:
-    spread=.35-.17*rise;a.reach(side,(.3+sign*spread,.65-.40*pull,.91+.045*rise),1)
+    spread=.28-.10*rise;a.limb(side,(.3+sign*spread,.43-.18*pull,.845+.055*rise),1,bend_hint=(sign,0,0))
    self.drape(t,pull)
    a.blink(t,closed=i in [3,9] or t<1.3)
   elif i==8:
@@ -385,7 +393,7 @@ def main():
   panes=[]
   for pane in getattr(w,'glass_panes',[]):
    xs=[v.co.x for v in pane.data.vertices];ys=[v.co.y for v in pane.data.vertices];zs=[v.co.z for v in pane.data.vertices];panes.append([uv(pane.matrix_world@Vector(v)) for v in [(min(xs),min(ys),min(zs)),(max(xs),min(ys),min(zs)),(max(xs),min(ys),max(zs)),(min(xs),min(ys),max(zs))]])
-  return {'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
+  return {'cloth_support_corrected':getattr(w,'cloth_support_corrected',False),'curtain_gap_m':(min(v.co.x for o,side in w.curtain_data if side==1 for v in o.data.vertices)-max(v.co.x for o,side in w.curtain_data if side==-1 for v in o.data.vertices)) if hasattr(w,'curtain_data') else None,'duvet_peak_z':max(v.co.z for v in w.duvet.data.vertices) if hasattr(w,'duvet') else None,'head_uv':uv(w.actor.joint('Head')+Vector((0,0,.08))) if a.scene in [3,4] else None,'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
  common=[python,str(P/'denoise.py'),'--ocio',ocio]
  if a.scene==12:common+=['--background',str(ASSET/'spacewalk.png')]
  if a.scene in [1,10,11]:common+=['--mask-outdir',str(P/'weather_masks'/f'{a.scene:02}')]

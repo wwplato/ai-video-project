@@ -54,3 +54,23 @@ def render(i,t):
    r=65+18*(.5+.5*math.sin(t*5));d.ellipse((x-r,y-r,x+r,y+r),outline=(185,255,239,110),width=2)
  # Low-energy emission halo lets the lettering feel projected into the glass.
  glow=im.filter(ImageFilter.GaussianBlur(4));glow.putalpha(glow.getchannel('A').point(lambda a:round(a*.17)));return Image.alpha_composite(glow,im)
+
+def render_right(i,t):
+ """A second glass display with complementary information and gentle motion."""
+ im=Image.new('RGBA',(W,H),(6,37,46,27));d=ImageDraw.Draw(im)
+ d.line((35,25,1365,25),fill=(166,255,238,110),width=2);d.line((35,825,1365,825),fill=(166,255,238,80),width=2);text(d,(55,50),'LUMINEX',46,WHITE,True);text(d,(1000,64),'LIVE STATUS',27,TEAL)
+ if i==3:
+  text(d,(55,190),'SLEEP CARE',91,WHITE,True);text(d,(60,345),'기상 예약  07:00',51,TEAL);text(d,(60,455),'암흑 모드 · 편안한 수면',39);text(d,(60,555),'기상 감지 대기' if t<1.4 else '기상 감지 · 아침 준비',39,DIM)
+ elif i==11:
+  tone=(255,211,164,245);text(d,(55,190),'SAFETY LOCK',83,tone,True);text(d,(60,350),'강풍 · 폭우 대응',44);text(d,(60,460),'안전 잠금 작동 중' if t<2.8 else '안전 잠금 완료',47,TEAL);text(d,(60,570),'가족 스마트폰으로 알림 전송',36,DIM)
+ elif i==6:
+  text(d,(55,180),'오후 날씨 알림',60,TEAL,True);text(d,(55,310),'15:00  비 예보',73,WHITE,True);text(d,(60,440),'외출할 때 우산을 챙기세요',42);text(d,(60,550),'일정과 날씨를 함께 확인해요',36,DIM)
+ elif i==8:
+  text(d,(55,180),'LIGHT CONTROL',77,WHITE,True);text(d,(60,340),'부드러운 저녁 빛',48,TEAL);text(d,(60,448),'반투명 모드로 전환',40);text(d,(60,558),'풍경의 색과 빛은 유지합니다',35,DIM)
+ else:
+  text(d,(55,175),'실내 환경',50,TEAL,True);text(d,(55,270),'23°',119,WHITE,True);text(d,(650,270),'46%',119,WHITE,True);text(d,(60,422),'실내 온도',34,DIM);text(d,(660,422),'습도',34,DIM);text(d,(60,520),'빗방울 감지 · 환기 일시 중지' if i==10 and t>3.8 else '공기질 좋음 · 자동 환기 준비',39,TEAL)
+ # A moving trace keeps the transparent interface visibly alive.
+ points=[(70+k*10,695-15*math.sin(k*.12-t*.65)-7*math.sin(k*.045+t*.4)) for k in range(121)]
+ for y in [650,700,750]:d.line((65,y,1290,y),fill=(200,255,243,38),width=1)
+ d.line(points,fill=(153,252,227,190),width=4);x=70+1200*((t*.12)%1);d.line((x,635,x,763),fill=(216,255,246,125),width=2)
+ glow=im.filter(ImageFilter.GaussianBlur(4));glow.putalpha(glow.getchannel('A').point(lambda a:round(a*.14)));return Image.alpha_composite(glow,im)
