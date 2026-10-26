@@ -12,3 +12,5 @@
 렌더링 후처리는 Intel Open Image Denoise 2.5.1(외부 런타임, Apache 2.0)과 OpenColorIO의 Blender AgX 색상 변환을 사용합니다. 이 바이너리 런타임은 저장소에 포함하지 않습니다.
 
 원격 제어 배경 `assets/spacewalk.png`는 포항 환호공원의 스페이스워크를 참고해 생성한 콘셉트 재현 이미지입니다. 실제 현장 사진이 아니며 구조·주변 경관에는 차이가 있습니다. 장소 참고: [포항시 관광 안내](https://pohang.go.kr/phtour/wmap/tourInformation/view.do?cate_id=93&menu_idx=104&tour_info_idx=747).
+
+석재 테라스·유리 난간·화단·외벽과 썬팅 외부 촬영은 이 프로젝트에서 만든 3D 공간입니다. 기존 `assets/privacy.png`는 외부 건축 디자인 참고로 사용하며 완성 영상의 썬팅 장면은 실제 3D 카메라 이동으로 렌더링합니다.

@@ -41,6 +41,8 @@ def verify(folder):
   windows.append({'source_scene':s+1,'whole_sash_travel_m':round(float(sash.max()-sash.min()),4)})
  gaps=np.array([x['curtain_gap_m'] for x in data[1] if x['time']>=5]);assert np.all(np.diff(gaps)<=.0001) and .04<gaps[-1]<.12
  assert max(x['duvet_peak_z'] for x in data[3])<1.03
- return {'product':'LUMINEX','camera_independent_world_space_measurements':True,'output_fps':24,'unique_3d_shots':11,'character_scene_segments':sum(bool(s['characters']) for s in scenes),'gait':'Alternating passing steps; balanced hips, bounded pelvis rise, eased foot swings, heel/toe pivots and planted stance contacts','sampling':'Walking intervals rendered at 24fps; quiet post-walk movement uses 12fps with motion interpolation','walking':walking,'bed':bed,'windows':windows,'scenes':scenes,'curtains':{'final_gap_m':float(gaps[-1]),'coverage_fraction':1-float(gaps[-1])/6.08}}
+ curtain_separation=min(x['curtain_frame_gap_m'] for x in data[1]);assert curtain_separation>.12
+ assert not data[7][0]['exterior_view'] and all(x['exterior_view'] for x in data[7] if x['time']>=5)
+ return {'product':'LUMINEX','camera_independent_world_space_measurements':True,'output_fps':24,'unique_3d_shots':11,'character_scene_segments':sum(bool(s['characters']) for s in scenes),'gait':'Alternating passing steps; balanced hips, bounded pelvis rise, eased foot swings, heel/toe pivots and planted stance contacts','sampling':'Walking intervals rendered at 24fps; quiet post-walk movement uses 12fps with motion interpolation','walking':walking,'bed':bed,'windows':windows,'scenes':scenes,'curtains':{'final_gap_m':float(gaps[-1]),'coverage_fraction':1-float(gaps[-1])/6.08,'minimum_curtain_to_window_hardware_separation_m':curtain_separation}}
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('folder',type=Path,nargs='?',default=Path(__file__).resolve().parent);args=parser.parse_args();print(json.dumps(verify(args.folder),ensure_ascii=False,indent=2))

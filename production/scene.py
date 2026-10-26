@@ -67,18 +67,20 @@ class BaseSet:
   if i==13:
    self.blocks=[cube('Child play block',(-.8+j*.19,-.65,.07),(.13,.13,.13),mat('Toy color'+str(j),c),.015) for j,c in enumerate([(.12,.38,.36),(.68,.39,.12),(.52,.18,.14)])]
  def ordinary_curtains(self):
-  fabric=mat('Ordinary linen curtains',(.77,.74,.67),.94);self.curtain_data=[]
+  fabric=mat('Ordinary linen curtains',(.77,.74,.67),.94);self.curtain_data=[];self.curtain_carriers=[]
   n=fabric.node_tree.nodes;l=fabric.node_tree.links;noise=n.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=160;bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.08;bump.inputs['Distance'].default_value=.002;l.new(noise.outputs['Fac'],bump.inputs['Height']);l.new(bump.outputs[0],n.get('Principled BSDF').inputs['Normal'])
   for side in [-1,1]:
    vs=[];fs=[]
    for j in range(19):
-    for k in range(37):u=k/36;v=j/18;vs.append((0,1.9+.045*math.sin(u*math.pi*18),.15+3.28*v))
+    for k in range(37):u=k/36;v=j/18;vs.append((0,1.55+.035*math.sin(u*math.pi*18),.035+3.50*v))
    for j in range(18):
     for k in range(36):q=j*37+k;fs.append((q,q+1,q+38,q+37))
    me=bpy.data.meshes.new('Pleated linen');me.from_pydata(vs,[],fs);me.update();o=bpy.data.objects.new('Manual curtain '+str(side),me);bpy.context.collection.objects.link(o);o.data.materials.append(fabric)
    for f in me.polygons:f.use_smooth=True
    self.curtain_data.append((o,side))
-  cube('Curtain ceiling track',(-.2,1.92,3.48),(6.3,.08,.055),self.metal,.012)
+   for k in range(13):self.curtain_carriers.append((cyl('Curtain track glider',(0,1.55,3.555),.008,.065,self.metal),side,k/12))
+  cube('Curtain ceiling track',(-.08,1.55,3.60),(6.46,.08,.045),self.metal,.012)
+  for x in [-3.25,3.05]:cube('Curtain ceiling suspension',(x,1.55,3.72),(.055,.12,.15),self.metal,.008)
   wet=mat('Rainwater on oak',(.09,.13,.14),.08,.25);sphere('Rainwater puddle',(1.3,1.5,.022),(.50,.27,.006),wet)
  def plant(self,pos,h):
   x,y,z=pos;cyl('Ceramic planter',(x,y,.2*h),.22*h,.4*h,self.ivory);stem=mat('Plant stem',(.15,.22,.075),.8);leaf=mat('Leaf wax',(.12,.25,.11),.36)
@@ -257,6 +259,8 @@ class Set(BaseSet):
   self.latch.location=(2.884,1.88,1.25)
   self.lock_bolt=cube('Positive safety locking bolt',(2.87,1.87,1.25),(.06,.03,.023),self.bronze,.004);self.lock_bolt.hide_render=self.i not in [10,11]
   self.panel=self.screen('window',(-1.70,1.94,2.03),(2.80,1.70));self.rain=[]
+  from exterior import build_exterior
+  build_exterior(self)
  def bed(self):
   cube('Upholstered bed base',(.3,.18,.30),(1.65,2.5,.45),self.cloth,.12);cube('Linen mattress',(.3,.18,.55),(1.62,2.40,.25),self.ivory,.12);cube('Soft headboard',(.3,1.47,.85),(1.85,.16,1.25),self.cloth,.10);sphere('Compressible pillow',(.3,1.04,.735),(.66,.34,.06),self.ivory)
   self.duvet_verts=[];faces=[];self.duvet_nx=43;self.duvet_ny=43
@@ -341,6 +345,15 @@ class Set(BaseSet):
     self.sun.data.color=(1,.70,.43)
     for o in self.lightobjects:o.data.color=(1,.86,.70)
    appear=1 if i in [3,9] else ease((t-(.5 if i==2 else 2.9 if i in [5,6] else 0))/.8);self.panel.location.y=2.0-.08*appear;self.panel.scale=(.02+.98*appear,)*3
+  if i!=12:
+   from exterior import animate_exterior
+   animate_exterior(self,t)
+  self.exterior_view=i==7 and t>=5
+  if self.exterior_view:
+   u=ease((t-5)/5);self.cam.location=(-4.9+1.2*u,8.7-.9*u,2.65+.15*u);self.cam.data.lens=31;aim(self.cam,(-.10,2.20,1.72))
+  for glass in self.glass_nodes if i!=12 else []:
+   mix=next(n for n in glass.id_data.nodes if n.type=='MIX_SHADER');mix.inputs[0].default_value=.965 if self.exterior_view else 0
+   if self.exterior_view:glass.inputs['Roughness'].default_value=.008;glass.inputs['Color'].default_value=(.24,.36,.47,1)
   if i==2:
    u=ease(t/3.8);self.cam.location=(1.5+2.3*u,.50-5.0*u,1.65+.71*u);self.cam.data.lens=55-20*u;aim(self.cam,(2.66-2.76*u,1.98,1.58+.29*u))
   if i in [0,14,2,10,11]:return
@@ -349,16 +362,18 @@ class Set(BaseSet):
    if t<5:
     a.walk(t,4.2,(-1.7,-2.0),-.65,4,.72)
     for o,side in self.curtain_data:
-     for j,v in enumerate(o.data.vertices):v.co.x=(2.53 if side==1 else -3.28)+(j%37)/36*.3
+     for j,v in enumerate(o.data.vertices):v.co.x=(2.30 if side==1 else -3.28)+(j%37)/36*.75
      o.data.update()
    else:
     self.panorama_shader.inputs['Strength'].default_value=.045;self.sun.data.energy=.01
     for k,o in enumerate(self.lightobjects):o.data.energy=[55,85][k]
-    a.walk(max(0,t-5),4.2,(-.45,1.48),-math.pi/2,4,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
+    a.walk(max(0,t-5),4.2,(-.45,1.13),-math.pi/2,4,.66);target=(a.root.location.x+.23,1.50,1.50);a.reach('R',target,ease((t-5)/.4))
     for o,side in self.curtain_data:
-     left=a.root.location.x+.27 if side==1 else -3.28;draw=ease((t-5)/4.2);width=2.83-left if side==1 else .30+2.72*draw
+     left=a.root.location.x+.27 if side==1 else -3.28;draw=ease((t-5)/4.2);width=3.05-left if side==1 else .75+2.27*draw
      for j,v in enumerate(o.data.vertices):v.co.x=left+(j%37)/36*width
      o.data.update()
+   bounds={side:(min(v.co.x for v in ob.data.vertices),max(v.co.x for v in ob.data.vertices)) for ob,side in self.curtain_data}
+   for ob,side,u in self.curtain_carriers:ob.location.x=bounds[side][0]+u*(bounds[side][1]-bounds[side][0])
   elif i in [2,5,6]:
    a.walk(t,2.5,(0,1.48),math.pi,2,.78);contact=ease((t-3.0)/.8)*(1-ease((t-7.1)/.9));a.touch('L',(-.42,1.965,1.48),contact);a.head_turn(-.07*ease((t-2.6)/.8))
   elif i in [3,4,9]:
@@ -393,7 +408,7 @@ def main():
   panes=[]
   for pane in getattr(w,'glass_panes',[]):
    xs=[v.co.x for v in pane.data.vertices];ys=[v.co.y for v in pane.data.vertices];zs=[v.co.z for v in pane.data.vertices];panes.append([uv(pane.matrix_world@Vector(v)) for v in [(min(xs),min(ys),min(zs)),(max(xs),min(ys),min(zs)),(max(xs),min(ys),max(zs)),(min(xs),min(ys),max(zs))]])
-  return {'cloth_support_corrected':getattr(w,'cloth_support_corrected',False),'curtain_gap_m':(min(v.co.x for o,side in w.curtain_data if side==1 for v in o.data.vertices)-max(v.co.x for o,side in w.curtain_data if side==-1 for v in o.data.vertices)) if hasattr(w,'curtain_data') else None,'duvet_peak_z':max(v.co.z for v in w.duvet.data.vertices) if hasattr(w,'duvet') else None,'head_uv':uv(w.actor.joint('Head')+Vector((0,0,.08))) if a.scene in [3,4] else None,'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
+  return {'exterior_view':getattr(w,'exterior_view',False),'curtain_y_max':max(v.co.y for o,side in w.curtain_data for v in o.data.vertices) if hasattr(w,'curtain_data') else None,'curtain_frame_gap_m':min((o.matrix_world@Vector(v)).y for root in w.pane_roots for o in root.children if o.type in ['MESH','FONT'] for v in o.bound_box)-max(v.co.y for o,side in w.curtain_data for v in o.data.vertices) if hasattr(w,'curtain_data') else None,'cloth_support_corrected':getattr(w,'cloth_support_corrected',False),'curtain_gap_m':(min(v.co.x for o,side in w.curtain_data if side==1 for v in o.data.vertices)-max(v.co.x for o,side in w.curtain_data if side==-1 for v in o.data.vertices)) if hasattr(w,'curtain_data') else None,'duvet_peak_z':max(v.co.z for v in w.duvet.data.vertices) if hasattr(w,'duvet') else None,'head_uv':uv(w.actor.joint('Head')+Vector((0,0,.08))) if a.scene in [3,4] else None,'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
  common=[python,str(P/'denoise.py'),'--ocio',ocio]
  if a.scene==12:common+=['--background',str(ASSET/'spacewalk.png')]
  if a.scene in [1,10,11]:common+=['--mask-outdir',str(P/'weather_masks'/f'{a.scene:02}')]

@@ -15,7 +15,29 @@ def make_city(i):
  dst=P/'clips'/f'{i:02}.mp4';proc=encoder(dst)
  for f in range(240):proc.stdin.write(city_frame(i,f/24).tobytes())
  proc.stdin.close();assert proc.wait()==0;print('CLIP_DONE',i,'city',flush=True)
+def master_privacy():
+ # Interpolate each camera view separately so optical flow never crosses the cut.
+ def reader(start,first=False):
+  # Supply real repeated tail frames for lookahead; filter EOF timestamps must
+  # never truncate either half of the interior/exterior transition.
+  folder=P/'cache/privacy_phase'/str(start);folder.mkdir(parents=True,exist_ok=True)
+  for k in range(80):
+   target=folder/f'{k+1:04}.png';target.unlink(missing_ok=True);os.link(P/'frames/07'/f'{start+min(k,59):04}.png',target)
+  vf='minterpolate=fps=24:mi_mode=mci:mc_mode=obmc:me_mode=bidir:me=epzs:vsbmc=0,fps=24,scale=1920:1080:flags=lanczos'
+  return subprocess.Popen(['ffmpeg','-v','error','-threads','1','-filter_threads','1','-framerate','12','-start_number','1','-i',str(folder/'%04d.png'),'-vf',vf,'-frames:v','120','-r','24','-threads','1','-pix_fmt','rgb24','-f','rawvideo','-'],stdout=subprocess.PIPE)
+ dst=P/'masters/07.mp4';out=subprocess.Popen(['ffmpeg','-y','-v','error','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r','24','-i','-','-an','-c:v','libx264','-preset','veryfast','-crf','16','-threads','1','-pix_fmt','yuv420p',str(dst)],stdin=subprocess.PIPE);last=None
+ for phase,start in enumerate([1,61]):
+  inp=reader(start,phase==0)
+  for frame in range(120):
+   raw=inp.stdout.read(W*H*3);assert len(raw)==W*H*3,(phase,frame,len(raw))
+   if phase==1 and frame<4:raw=Image.blend(last,Image.frombytes('RGB',(W,H),raw),(frame+1)/4).tobytes()
+   if phase==0 and frame==119:last=Image.frombytes('RGB',(W,H),raw)
+   out.stdin.write(raw)
+  inp.stdout.close();assert inp.wait()==0
+ out.stdin.close();assert out.wait()==0;print('MASTER_DONE',7,flush=True)
+
 def master(src):
+ if src==7:return master_privacy()
  dst=P/'masters'/f'{src:02}.mp4'
  metadata=json.loads((P/f'camera_{src:02}.json').read_text());source_fps=round(1/(metadata[1]['time']-metadata[0]['time']));vf='tpad=stop_mode=clone:stop_duration=0.8,minterpolate=fps=24:mi_mode=mci:mc_mode=obmc:me_mode=bidir:me=epzs:vsbmc=0,scale=1920:1080:flags=lanczos'
  if src==2:vf='scale=1920:1080:flags=lanczos'
@@ -29,7 +51,9 @@ def assemble(i,src):
  read+=['-f','rawvideo','-pix_fmt','rgb24','-'];inp=subprocess.Popen(read,stdout=subprocess.PIPE);proc=encoder(dst);home=None
  if i==12:home=subprocess.Popen(['ffmpeg','-v','error','-threads','1','-i',str(P/'masters/10.mp4'),'-vf','scale=480:270','-threads','1','-f','rawvideo','-pix_fmt','rgb24','-'],stdout=subprocess.PIPE)
  for f in range(240):
-  raw=inp.stdout.read(W*H*3);assert len(raw)==W*H*3,(i,f,len(raw));im=Image.frombytes('RGB',(W,H),raw);source_time=(2.75+.725*f/24) if i==6 else f/24;at=min(len(metadata)-1,source_time*source_fps);j=int(at);k=min(j+1,len(metadata)-1);w=at-j;quad=np.array(metadata[j]['quad'])*(1-w)+np.array(metadata[k]['quad'])*w;hands=np.array(metadata[j]['hands'])*(1-w)+np.array(metadata[k]['hands'])*w;home_frame=None
+  raw=inp.stdout.read(W*H*3);assert len(raw)==W*H*3,(i,f,len(raw));im=Image.frombytes('RGB',(W,H),raw);source_time=(2.75+.725*f/24) if i==6 else f/24;at=min(len(metadata)-1,source_time*source_fps);j=int(at);k=min(j+1,len(metadata)-1);w=at-j
+  if bool(metadata[j].get("exterior_view",False))!=bool(metadata[k].get("exterior_view",False)):k=j;w=0
+  quad=np.array(metadata[j]['quad'])*(1-w)+np.array(metadata[k]['quad'])*w;hands=np.array(metadata[j]['hands'])*(1-w)+np.array(metadata[k]['hands'])*w;home_frame=None
   if home:
    hraw=home.stdout.read(480*270*3);assert len(hraw)==480*270*3;home_frame=Image.frombytes('RGB',(480,270),hraw)
   weather_mask=None;weather_panes=None
@@ -44,7 +68,7 @@ def assemble(i,src):
    from PIL import ImageChops
    body_mask=ImageChops.lighter(load_character_mask(str(mask_path)),load_character_mask(str(P/'character_masks'/f'{src:02}'/f'{k+1:04}.png')))
    if (P/f'room_mask_{src:02}.png').exists():body_mask=ImageChops.lighter(body_mask,load_character_mask(str(P/f'room_mask_{src:02}.png')))
-  im=overlays(im,i,f/24,quad,right_quad=right_quad,right_visibility=right_visibility,body_mask=body_mask,occluders=hands.tolist(),home_frame=home_frame,weather_mask=weather_mask,weather_panes=weather_panes);proc.stdin.write(im.tobytes())
+  im=overlays(im,i,f/24,quad,exterior_view=bool(metadata[j].get("exterior_view",False)),screen_opacity=(1-ease((f/24-4.7)/.3)) if i==7 else 1,right_quad=right_quad,right_visibility=right_visibility,body_mask=body_mask,occluders=hands.tolist(),home_frame=home_frame,weather_mask=weather_mask,weather_panes=weather_panes);proc.stdin.write(im.tobytes())
   if f in [24,48,96,120,168,192,216]:im.save(P/f'proof_{i:02}_{f:03}.jpg',quality=95)
  proc.stdin.close();assert proc.wait()==0;inp.stdout.close();assert inp.wait()==0
  if home:home.stdout.close();assert home.wait()==0
@@ -86,8 +110,8 @@ def render_masks():
 def render():
  def one(i):
   env=os.environ.copy();env['LP_NUM_THREADS']='1';env['MESA_SHADER_CACHE_DIR']=str(P/'cache');env['OPENBLAS_NUM_THREADS']='1';env['LUMINEX_PYTHON']=sys.executable
-  fps=24 if i in [1,2,5] else 6 if i in [7,8] else 12
-  with (P/f'render_{i:02}.log').open('w') as f:subprocess.run(['blender','-b','-t','1','--factory-startup','--python-exit-code','1','--python',str(P/'scene.py'),'--','--scene',str(i),'--frames',str(fps*10),'--fps',str(fps),'--width','1280','--samples',str(6 if i in [2,12,13] else 4)],env=env,stdout=f,stderr=subprocess.STDOUT,check=True)
+  fps=24 if i in [1,2,5] else 6 if i==8 else 12
+  with (P/f'render_{i:02}.log').open('w') as f:subprocess.run(['blender','-b','-t','1','--factory-startup','--python-exit-code','1','--python',str(P/'scene.py'),'--','--scene',str(i),'--frames',str(fps*10),'--fps',str(fps),'--width','1280','--samples',str(6 if i in [2,7,12,13] else 4)],env=env,stdout=f,stderr=subprocess.STDOUT,check=True)
  with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(one,sorted(set(MAPPING.values()))))
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--watch',action='store_true');args=parser.parse_args()

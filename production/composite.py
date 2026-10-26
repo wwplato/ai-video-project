@@ -34,15 +34,18 @@ def project_ui(im,quad,i,t,occluders=None,side="left",opacity=1,body_mask=None):
    for x,y in p:d.ellipse((x-5,y-5,x+5,y+5),fill=0)
   tile.putalpha(ImageChops.multiply(tile.getchannel('A'),mask))
  im.paste(tile,(0,0),tile)
-def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather_panes=None,weather_mask=None,right_quad=None,right_visibility=0,body_mask=None):
+def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather_panes=None,weather_mask=None,right_quad=None,right_visibility=0,body_mask=None,exterior_view=False,screen_opacity=1):
  im=im.convert('RGB')
+ if exterior_view:quad=None;right_quad=None;body_mask=None;right_visibility=0
  if body_mask is not None:body_mask=normalise_mask(body_mask).resize((W,H),Image.Resampling.LANCZOS).filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(.7))
- if i==8:im=Image.blend(im,Image.new('RGB',im.size,'#b67942'),.025)
+ if i==8:
+  im=Image.blend(im,Image.new('RGB',im.size,'#b67942'),.025)
+  if body_mask is not None and t>2.5:im=Image.composite(im.filter(ImageFilter.GaussianBlur(16*ease((t-2.5)/2))),im,ImageChops.invert(body_mask))
  if i in [1,10,11] and weather_mask is not None:
   from rain import apply as apply_rain
   im=apply_rain(im,i,t,[] if weather_panes is None else weather_panes,weather_mask)
- if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders,body_mask=body_mask)
- if right_quad is not None and right_visibility>.001 and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,right_quad,i,t,occluders,side="right",opacity=right_visibility,body_mask=body_mask)
+ if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders,body_mask=body_mask,opacity=screen_opacity)
+ if right_quad is not None and right_visibility>.001 and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,right_quad,i,t,occluders,side="right",opacity=right_visibility*screen_opacity,body_mask=body_mask)
  if i==12:
   location=Image.new('RGBA',(W,H));ld=ImageDraw.Draw(location);ld.rounded_rectangle((84,169,594,221),radius=19,fill=(5,31,39,156));text(ld,(104,176),'포항 환호공원 · 스페이스워크',26,TEAL,True);im.paste(location,(0,0),location)
   card=Image.new('RGBA',(520,405),(0,0,0,0));cd=ImageDraw.Draw(card);cd.rounded_rectangle((0,0,519,404),radius=18,fill=(5,31,39,157),outline=(159,229,219,180),width=2);text(cd,(21,13),'우리 집 창문  ·  LIVE',23,TEAL,True)
@@ -54,9 +57,8 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather
     mask=blackout_coverage().point(lambda value:round(value*strength));home_frame=Image.composite(Image.new('RGB',(480,270),'#03070a'),home_frame,mask)
    card.paste(home_frame,(20,59))
   status='원격 연결됨' if t<3.8 else '창문 닫는 중…' if t<6 else '닫힘 · 안전 잠금' if t<7.2 else '닫힘 · 암흑 모드';text(cd,(23,348),status,25,WHITE,True);im.paste(card,(1340,150),card)
- if i==7 and t>5:
-  # Show the exterior finish while the articulated resident remains in view.
-  k=ease((t-5)/.35);panel=Image.new('RGBA',(510,337),(0,0,0,0));pd=ImageDraw.Draw(panel);pd.rounded_rectangle((1,1,508,335),radius=19,fill=(5,24,33,245),outline=(123,182,184,230),width=2);pd.text((22,12),'OUTSIDE VIEW  ·  프라이버시 썬팅',font=font(19),fill=TEAL);picture=exterior().resize((472,266),Image.Resampling.LANCZOS);panel.paste(picture,(19,51));panel.putalpha(panel.getchannel('A').point(lambda a:round(a*k)));im.paste(panel,(1370+round((1-k)*36),156),panel)
+ if exterior_view:
+  badge=Image.new('RGBA',(W,H));bd=ImageDraw.Draw(badge);bd.rounded_rectangle((84,169,720,225),radius=20,fill=(5,31,39,162));text(bd,(105,179),'OUTSIDE VIEW · 프라이버시 썬팅',26,TEAL,True);im.paste(badge,(0,0),badge)
  layer=gradient()
  if i==5 and t<3.1:
   layer=layer.copy();alpha=np.asarray(layer.getchannel('A')).copy();y=np.arange(H);top=np.clip((470-y)/470,0,1)**.55*.82;bottom=np.clip((y-750)/310,0,1)**.8*.88*ease((t-2.65)/.45);alpha[:]=np.maximum(top,bottom)[:,None]*255;layer.putalpha(Image.fromarray(alpha))
@@ -91,8 +93,6 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather
  return im
 @lru_cache(None)
 def blackout_coverage():return Image.open(ASSETS/'home_blackout_mask.png').convert('L').point(lambda value:255 if value>180 else 0)
-@lru_cache(None)
-def exterior():return Image.open(ASSETS/'privacy.png').convert('RGB')
 @lru_cache(None)
 def city_image():return Image.open(ASSETS/'city.png').convert('RGB')
 def city_frame(i,t):

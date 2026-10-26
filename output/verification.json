@@ -11,8 +11,8 @@
     1080
   ],
   "frames": 3600,
-  "size_bytes": 35438409,
-  "sha256": "77bfbbaad2c0d5a47ec97b1c7d82176e715439e541920583c6620e7dafe6c4ef",
+  "size_bytes": 38500885,
+  "sha256": "74a74c9d898cae2bfa9b4dc6c2d1620083da1f097c86c8e7628e04024cb7a8ff",
   "full_decode": "passed",
   "year": 2035,
   "exists": true,
@@ -42,5 +42,8 @@
   "screens": "Two glass-aligned displays with body and hand occlusion",
   "curtain": "Center-closing pair; 8 cm final gap",
   "bedding": "Lower blanket relief, relaxed limbs and visible supported head",
-  "night_walls": "Wider bedroom and curtain camera views with independent wall-wash lighting"
+  "night_walls": "Wider bedroom and curtain camera views with independent wall-wash lighting",
+  "outdoor_space": "Physical 3.65m stone terrace, glass balustrade, landscaping and facade",
+  "privacy_exterior": "Animated 3D exterior camera with four-frame dissolve",
+  "curtain_clearance_m": 0.15599989891052246
 }
