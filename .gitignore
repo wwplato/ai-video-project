@@ -17,3 +17,5 @@ production/sample_*.json
 
 production/weather_masks/
 production/camera_progress_*.json
+
+production/foreground/

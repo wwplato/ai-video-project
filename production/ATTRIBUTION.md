@@ -5,8 +5,10 @@
 - **Iridescence Lamp** — © 2022 Wayfair, LLC, Eric Chadwick. [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). [원본·설명](licenses/IridescenceLamp_README.md). 배치·크기·조명을 변경했습니다.
 - **Sheen Chair** — © 2020 Wayfair, LLC, Eric Chadwick. [CC0](https://creativecommons.org/publicdomain/zero/1.0/). [원본·설명](licenses/SheenChair_README.md). 배치·조명을 변경했으며, 동봉된 목재 이미지 `Image_3.png`를 바닥 재질에도 사용했습니다.
 
-가구의 GLB 원본은 [Khronos glTF Sample Assets](https://github.com/KhronosGroup/glTF-Sample-Assets)에서 받았습니다. 영상 마지막 화면에도 자산 크레딧을 표시합니다. 포항 2035년 해안 전경과 프라이버시 외관, 야외 캠퍼스와 태풍 때의 해안 배경은 이 프로젝트에서 생성한 미래 도시 콘셉트 이미지입니다. LUMINEX 화면 디자인·건축 공간·영상 편집과 피아노 음악은 이 프로젝트에서 제작했습니다.
+가구의 GLB 원본은 [Khronos glTF Sample Assets](https://github.com/KhronosGroup/glTF-Sample-Assets)에서 받았습니다. 영상 마지막 화면에도 자산 크레딧을 표시합니다. 포항 2035년 해안 전경과 프라이버시 외관, 환호공원 스페이스워크와 태풍 때의 해안 배경은 이 프로젝트에서 생성한 미래 도시 콘셉트 이미지입니다. LUMINEX 화면 디자인·건축 공간·영상 편집과 피아노 음악은 이 프로젝트에서 제작했습니다.
 
 피아노 음색: TimGM6mb SoundFont, Tim Brechbill / David Bolton. FluidSynth로 연주한 이 프로젝트의 원곡을 사용했으며 SoundFont 파일은 저장소에 포함하지 않습니다. [음원 자산 출처](licenses/TimGM6mb-copyright.txt).
 
 렌더링 후처리는 Intel Open Image Denoise 2.5.1(외부 런타임, Apache 2.0)과 OpenColorIO의 Blender AgX 색상 변환을 사용합니다. 이 바이너리 런타임은 저장소에 포함하지 않습니다.
+
+원격 제어 배경 `assets/spacewalk.png`는 포항 환호공원의 스페이스워크를 참고해 생성한 콘셉트 재현 이미지입니다. 실제 현장 사진이 아니며 구조·주변 경관에는 차이가 있습니다. 장소 참고: [포항시 관광 안내](https://pohang.go.kr/phtour/wmap/tourInformation/view.do?cate_id=93&menu_idx=104&tour_info_idx=747).

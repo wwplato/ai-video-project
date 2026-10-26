@@ -38,6 +38,7 @@ def overlays(im,i,t,quad=None,window=None,occluders=None,home_frame=None,weather
   im=apply_rain(im,i,t,[] if weather_panes is None else weather_panes,weather_mask)
  if quad is not None and i not in [1,9,12] and not(i==2 and t<2.7):project_ui(im,quad,i,t,occluders)
  if i==12:
+  location=Image.new('RGBA',(W,H));ld=ImageDraw.Draw(location);ld.rounded_rectangle((84,169,594,221),radius=19,fill=(5,31,39,156));text(ld,(104,176),'포항 환호공원 · 스페이스워크',26,TEAL,True);im.paste(location,(0,0),location)
   card=Image.new('RGBA',(520,405),(0,0,0,0));cd=ImageDraw.Draw(card);cd.rounded_rectangle((0,0,519,404),radius=18,fill=(5,31,39,157),outline=(159,229,219,180),width=2);text(cd,(21,13),'우리 집 창문  ·  LIVE',23,TEAL,True)
   if home_frame is not None:
    home_frame=home_frame.resize((480,270),Image.Resampling.LANCZOS)

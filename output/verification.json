@@ -11,8 +11,8 @@
     1080
   ],
   "frames": 3600,
-  "size_bytes": 32692693,
-  "sha256": "80711d7625d60f088dbe67d22af9e3042d833f1c2bc31d753227db09ca96b39c",
+  "size_bytes": 32598311,
+  "sha256": "71b4cb18617e9ee6447be996efd48bb5141a089cb15202ddd3cb3eaf8f2fa12f",
   "full_decode": "passed",
   "year": 2035,
   "exists": true,
@@ -36,5 +36,8 @@
   "scene_transition": "4-frame dissolves at 10-second boundaries",
   "rendering": "Cycles CPU + albedo/normal-guided OIDN + AgX",
   "weather": "Distinct typhoon plate; moving-glass droplets; depth-masked rain",
-  "assets_attribution": "../production/ATTRIBUTION.md"
+  "assets_attribution": "../production/ATTRIBUTION.md",
+  "remote_location": "Pohang Hwanho Park Space Walk concept recreation",
+  "gait_revision": "Alternating passing feet, balanced hips and bounded vertical motion",
+  "night_walls": "Wider bedroom and curtain camera views with independent wall-wash lighting"
 }

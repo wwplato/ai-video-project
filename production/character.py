@@ -88,37 +88,44 @@ class Character:
   for p in self.rig.pose.bones:
    if p.name.startswith('Bip01 '+side+' Toe'):
     m=reference[p.name];p.matrix=inv@Matrix.LocRotScale(target+delta@(m.translation-a0),delta@m.to_quaternion(),m.to_scale());bpy.context.view_layer.update()
+ def _walk_basis(self):
+  ref=self._reference_stance()
+  if 'balanced' in ref:return ref
+  b=ref['bones'];hips=[b['Bip01 '+s+' Thigh'].translation for s in ['L','R']];feet=[b['Bip01 '+s+' Foot'].translation for s in ['L','R']]
+  half=(hips[0].x-hips[1].x)/2;hy=(hips[0].y+hips[1].y)/2;hz=(hips[0].z+hips[1].z)/2-ref['height'];fy=(feet[0].y+feet[1].y)/2
+  ref['balanced']={s:{'hip':Vector((half if s=='L' else -half,hy,hz)),'foot':Vector((.086 if s=='L' else -.086,fy,feet[j].z))} for j,s in enumerate(['L','R'])};return ref
  def walk(self,t,duration,end=(0,1.48),yaw=math.pi,cycles=2,intensity=.8):
-  if t>=duration:self.idle(t-duration,(*end,0),yaw);return
-  ref=self._reference_stance();bones=ref['bones'];u=max(0,t/duration);R=Matrix.Rotation(yaw,3,'Z');Q=R.to_quaternion();forward=R@Vector((0,-1,0));distance=.62*cycles;start=Vector((end[0],end[1],0))-forward*distance
-  # Smooth acceleration/deceleration; real planted contacts stay in world space.
-  if u<.12:progress=.5*u*u/.12/.88
-  elif u>.88:progress=(.88-.5*(1-u)**2/.12)/.88
-  else:progress=(u-.06)/.88
-  env=min(ease(u/.13),ease((1-u)/.16));root=start+forward*distance*progress;root+=R@Vector((.012*math.sin(u*cycles*2*math.pi)*env,0,0));targets={};rotations={}
+  ref=self._walk_basis();bones=ref['bones'];balance=ref['balanced'];R=Matrix.Rotation(yaw,3,'Z');Q=R.to_quaternion();forward=R@Vector((0,-1,0));steps=cycles*2;distance=.62*cycles;start=Vector((end[0],end[1],0))-forward*distance
+  u=max(0,min(1,t/duration));z=u*steps;j=min(steps-1,int(z));v=z-j
+  # Alternate the leading foot. Only the very last step gathers to a stop.
+  # The previous plan gathered the trailing foot after EVERY leading step.
+  positions=[0]+[(k-.5)/(steps-1) for k in range(1,steps)]+[1]
+  slopes=[0]+[(positions[k+1]-positions[k-1])/2 for k in range(1,steps)]+[0]
+  progress=(2*v**3-3*v*v+1)*positions[j]+(v**3-2*v*v+v)*slopes[j]+(-2*v**3+3*v*v)*positions[j+1]+(v**3-v*v)*slopes[j+1]
+  env=min(ease(u/.10),ease((1-u)/.10));root=start+forward*distance*progress;root+=R@Vector((.008*math.sin(math.pi*steps*u)*env,0,0));targets={};rotations={}
   for side,parity in [('R',0),('L',1)]:
    advance=0;lift=0;roll=0;contact='heel'
-   for step in range(parity,cycles*2,2):
-    a=.055+step*(.84/(cycles*2));b=a+.90*(.84/(cycles*2));p=max(0,min(1,(u-a)/(b-a)))
-    # A cycloid gives zero horizontal/vertical velocity at contact.
-    advance+=distance/cycles*(p-math.sin(2*math.pi*p)/(2*math.pi))
-    if a-.045<u<a:
-     roll=math.radians(18)*ease((u-a+.045)/.045);contact='toe'
+   for step in range(parity,steps,2):
+    a=(step+.10)/steps;b=(step+.88)/steps;p=max(0,min(1,(u-a)/(b-a)));destination=min(distance,(step+1)*distance/(steps-1));origin=max(0,(step-1)*distance/(steps-1));advance+=(destination-origin)*ease(p)
+    if a-.12/steps<u<a:roll=math.radians(8)*ease((u-a+.12/steps)/(.12/steps));contact='toe'
     elif 0<p<1:
-     lift=.052*math.sin(math.pi*p)**2
-     roll=math.radians(18)*(1-ease(p/.38))-math.radians(9)*ease((p-.45)/.55);contact='toe' if roll>0 else 'heel'
-    elif b<=u<b+.055:roll=-math.radians(9)*(1-ease((u-b)/.055));contact='heel'
-   fm=bones['Bip01 '+side+' Foot'];anchor=start+R@fm.translation+forward*advance;delta=Quaternion(R@Vector((1,0,0)),roll);pivot=R@(ref['contacts'][side][contact]-fm.translation);targets[side]=anchor+pivot-delta@pivot+Vector((0,0,lift));rotations[side]=delta@Q@fm.to_quaternion()
-  height=ref['height']+.010*(1-math.cos(u*cycles*4*math.pi))*env
+     lift=.032*math.sin(math.pi*p)**2;roll=math.radians(8)*(1-ease(p/.4))-math.radians(5)*ease((p-.45)/.55);contact='toe' if roll>0 else 'heel'
+    elif b<=u<b+.18/steps:roll=-math.radians(5)*(1-ease((u-b)/(.18/steps)));contact='heel'
+   fm=bones['Bip01 '+side+' Foot'];anchor=start+R@balance[side]['foot']+forward*advance;delta=Quaternion(R@Vector((1,0,0)),roll*env);pivot=R@(ref['contacts'][side][contact]-fm.translation);targets[side]=anchor+pivot-delta@pivot+Vector((0,0,lift));rotations[side]=delta@Q@fm.to_quaternion()
+  phase=(u*steps)%1;height=ref['height']-.020*(.5+.5*math.cos(2*math.pi*(phase-.88)))*env
   for side in ['L','R']:
-   hm=bones['Bip01 '+side+' Thigh'];km=bones['Bip01 '+side+' Calf'];fm=bones['Bip01 '+side+' Foot'];length=(km.translation-hm.translation).length+(fm.translation-km.translation).length;offset=hm.translation-Vector((0,0,ref['height']));hip_xy=root+R@offset;horizontal=(Vector((hip_xy.x,hip_xy.y,0))-Vector((targets[side].x,targets[side].y,0))).length;max_z=targets[side].z+math.sqrt(max(.01,(length*.994)**2-horizontal**2))-offset.z;height=min(height,max_z)
-  hs,qs=self.sample('f_idle_breathe_01',0);period=(len(MOTION['f_walk_neutral']['frames'])-1)/30;hw,qw=self.sample('f_walk_neutral',.4+u*cycles*period);q={n:p.slerp(qw.get(n,p),min(.78,intensity)*env) for n,p in qs.items()}
+   hm=bones['Bip01 '+side+' Thigh'];km=bones['Bip01 '+side+' Calf'];fm=bones['Bip01 '+side+' Foot'];length=(km.translation-hm.translation).length+(fm.translation-km.translation).length;offset=balance[side]['hip'];hip_xy=root+R@offset;horizontal=(Vector((hip_xy.x,hip_xy.y,0))-Vector((targets[side].x,targets[side].y,0))).length;max_z=targets[side].z+math.sqrt(max(.01,(length*.998)**2-horizontal**2))-offset.z;height=min(height,max_z)
+  # Limit the recovery speed instead of snapping the pelvis upward when
+  # a trailing heel lifts and its reach limit suddenly disappears.
+  key=(duration,cycles,yaw,tuple(end));last=getattr(self,'walk_height_state',None)
+  if last and last[0]==key and t>=last[1]:height=min(height,last[2]+.08*(t-last[1]))
+  self.walk_height_state=(key,t,height)
+  hs,qs=self.sample('f_idle_breathe_01',max(0,t-duration) if t>=duration else 0);period=(len(MOTION['f_walk_neutral']['frames'])-1)/30;hw,qw=self.sample('f_walk_neutral',.4+u*cycles*period);q={n:p.slerp(qw.get(n,p),min(.72,intensity)*env) for n,p in qs.items()}
   for n in q:
    if any(x in n for x in ['Pelvis','Thigh','Calf','Foot','Toe']):q[n]=qs[n]
   self.apply(0,q,(root.x,root.y,0),yaw,pelvis=height)
   for side in ['L','R']:
-   offset=bones['Bip01 '+side+' Thigh'].translation-Vector((0,0,ref['height']));hip=Vector((root.x,root.y,height))+R@offset;self.place_leg(side,hip,targets[side],rotations[side],bones,yaw)
-   correction=max(0,.005-self.surface_z(side))
+   hip=Vector((root.x,root.y,height))+R@balance[side]['hip'];self.place_leg(side,hip,targets[side],rotations[side],bones,yaw);correction=max(0,.006-self.surface_z(side))
    if correction>.00001:self.place_leg(side,hip,targets[side]+Vector((0,0,correction)),rotations[side],bones,yaw)
  def limb(self,side,target,weight=1,leg=False,preserve=False,bend_hint=None):
   if weight<=0:return

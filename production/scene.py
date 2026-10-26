@@ -295,6 +295,10 @@ class Set(BaseSet):
  def lights(self):
   super().lights();s=bpy.context.scene;s.world.use_nodes=True;s.world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.67,.77,.95,1);s.world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.22;self.sun.data.angle=.07
   for o in self.lightobjects:o.data.use_shadow=True;o.data.specular_factor=0.0;o.visible_glossy=False;o.visible_transmission=False;o.visible_camera=False
+  if self.i in [1,3,4,9]:
+   self.wall_wash=[]
+   for loc,target,energy in [((-2.92,1.0,2.75),(-3.42,1.25,1.65),22),((3.35,1.0,2.75),(3.95,2.10,1.8),18)]:
+    bpy.ops.object.light_add(type='AREA',location=loc);light=bpy.context.object;light.name='Night wall wash';light.data.energy=energy;light.data.color=(1,.78,.52);light.data.shape='DISK';light.data.size=1.25;light.visible_glossy=False;light.visible_camera=False;light.data.specular_factor=0;aim(light,target);self.wall_wash.append(light)
   if self.i==12:self.sun.rotation_euler=(.55,-.45,-.6);self.sun.data.energy=1.3
  def actors(self):
   if self.i in [2,10,11]:self.people=[];self.actor=None;return
@@ -302,6 +306,8 @@ class Set(BaseSet):
   if self.i==12:self.panel=self.phone_screen
  def camera(self):
   super().camera()
+  if self.i in [3,4,9]:self.cam.location=(3.4,-6.0,2.9);self.target=(.20,.75,1.40);self.cam.data.lens=28;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
+  if self.i==1:self.cam.location=(3.5,-5.8,2.45);self.target=(.15,.85,1.35);self.cam.data.lens=31;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
   if self.i in [10,11]:self.cam.location=(-.2,-5.7,2.2);self.target=(-.2,2.0,1.3);self.cam.data.lens=25;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
   if self.i==12:self.cam.location=(2.2,-3.5,1.95);self.target=(.1,.0,1.18);self.cam.data.lens=49;self.camera_base=self.cam.location.copy();aim(self.cam,self.target)
  def render(self):
@@ -340,7 +346,7 @@ class Set(BaseSet):
    else:
     self.panorama_shader.inputs['Strength'].default_value=.045;self.sun.data.energy=.01
     for k,o in enumerate(self.lightobjects):o.data.energy=[55,85][k]
-    self.cam.location=(3.4,-4.4,2.4);aim(self.cam,(.65,1.3,1.5));a.walk(max(0,t-5),2.6,(.8,1.48),-math.pi/2,2,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
+    a.walk(max(0,t-5),2.6,(.8,1.48),-math.pi/2,2,.66);target=(a.root.location.x+.23,1.84,1.50);a.reach('R',target,ease((t-5)/.4))
     for o,side in self.curtain_data:
      left=a.root.location.x+.27 if side==1 else -3.28;width=2.83-left if side==1 else .30
      for j,v in enumerate(o.data.vertices):v.co.x=left+(j%37)/36*width
@@ -381,7 +387,7 @@ def main():
    xs=[v.co.x for v in pane.data.vertices];ys=[v.co.y for v in pane.data.vertices];zs=[v.co.z for v in pane.data.vertices];panes.append([uv(pane.matrix_world@Vector(v)) for v in [(min(xs),min(ys),min(zs)),(max(xs),min(ys),min(zs)),(max(xs),min(ys),max(zs)),(min(xs),min(ys),max(zs))]])
   return {'time':t,'quad':[uv(w.panel.matrix_world@v.co) for v in w.panel.data.vertices],'hands':hands,'weather_panes':panes,'characters':[{'joints':actor.telemetry(),'root':list(actor.root.location),'minimum_mesh_z':actor.surface_z()} for actor in w.people],'cloth_clearance':getattr(w,'cloth_clearance',None),'sliding_sash_x':float(w.sash.location.x) if hasattr(w,'sash') else None}
  common=[python,str(P/'denoise.py'),'--ocio',ocio]
- if a.scene==12:common+=['--background',str(ASSET/'campus.png')]
+ if a.scene==12:common+=['--background',str(ASSET/'spacewalk.png')]
  if a.scene in [1,10,11]:common+=['--mask-outdir',str(P/'weather_masks'/f'{a.scene:02}')]
  if a.sample is not None:
   t=a.sample/a.fps;w.update(t);bpy.context.view_layer.update();f=P/f'sample_{a.scene:02}_{a.sample}.exr';s.render.filepath=str(f);bpy.ops.render.render(write_still=True);subprocess.run(common+['--input',str(f),'--output',str(f.with_suffix('.png'))],check=True);f.with_suffix('.json').write_text(json.dumps(meta(t)));return

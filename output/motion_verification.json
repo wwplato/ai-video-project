@@ -4,7 +4,7 @@
   "output_fps": 24,
   "unique_3d_shots": 11,
   "character_scene_segments": 10,
-  "gait": "Cycloidal swings, toe-off and heel-strike pivots, forward knee IK and planted stance contacts",
+  "gait": "Alternating passing steps; balanced hips, bounded pelvis rise, eased foot swings, heel/toe pivots and planted stance contacts",
   "sampling": "Walking intervals rendered at 24fps; quiet post-walk movement uses 12fps with motion interpolation",
   "walking": [
     {
@@ -13,6 +13,25 @@
       "stopped_at_seconds": 2.5,
       "native_walk_fps": 24,
       "forward_motion_monotonic": true,
+      "alternating_leading_feet": [
+        {
+          "time_seconds": 0.5416666666666666,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.40379
+        },
+        {
+          "time_seconds": 1.1666666666666667,
+          "leading_foot": "L",
+          "signed_right_minus_left_forward_m": -0.40342
+        },
+        {
+          "time_seconds": 1.7916666666666667,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.40342
+        }
+      ],
+      "pelvis_height_range_m": 0.029651,
+      "maximum_vertical_change_per_frame_m": 0.005753,
       "travel_m": 1.24,
       "minimum_mesh_height_m": 0.006,
       "maximum_stopped_foot_drift_m": 0.0
@@ -23,9 +42,48 @@
       "stopped_at_seconds": 4.2,
       "native_walk_fps": 24,
       "forward_motion_monotonic": true,
-      "travel_m": 2.4793,
+      "alternating_leading_feet": [
+        {
+          "time_seconds": 0.4583333333333333,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.34536
+        },
+        {
+          "time_seconds": 1.0,
+          "leading_foot": "L",
+          "signed_right_minus_left_forward_m": -0.34589
+        },
+        {
+          "time_seconds": 1.5416666666666667,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.34753
+        },
+        {
+          "time_seconds": 2.0416666666666665,
+          "leading_foot": "L",
+          "signed_right_minus_left_forward_m": -0.3455
+        },
+        {
+          "time_seconds": 2.5833333333333335,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.34659
+        },
+        {
+          "time_seconds": 3.0833333333333335,
+          "leading_foot": "L",
+          "signed_right_minus_left_forward_m": -0.34527
+        },
+        {
+          "time_seconds": 3.625,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.34589
+        }
+      ],
+      "pelvis_height_range_m": 0.020967,
+      "maximum_vertical_change_per_frame_m": 0.005397,
+      "travel_m": 2.479,
       "minimum_mesh_height_m": 0.006,
-      "maximum_stopped_foot_drift_m": 0.0
+      "maximum_stopped_foot_drift_m": 1e-05
     },
     {
       "source_scene": 2,
@@ -33,9 +91,28 @@
       "stopped_at_seconds": 7.6,
       "native_walk_fps": 24,
       "forward_motion_monotonic": true,
+      "alternating_leading_feet": [
+        {
+          "time_seconds": 5.583333333333333,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.40471
+        },
+        {
+          "time_seconds": 6.25,
+          "leading_foot": "L",
+          "signed_right_minus_left_forward_m": -0.40577
+        },
+        {
+          "time_seconds": 6.875,
+          "leading_foot": "R",
+          "signed_right_minus_left_forward_m": 0.4045
+        }
+      ],
+      "pelvis_height_range_m": 0.026963,
+      "maximum_vertical_change_per_frame_m": 0.006401,
       "travel_m": 1.2398,
       "minimum_mesh_height_m": 0.006,
-      "maximum_stopped_foot_drift_m": 1e-05
+      "maximum_stopped_foot_drift_m": 0.0
     }
   ],
   "bed": [
@@ -66,7 +143,7 @@
       "source_scene": 2,
       "characters": 1,
       "metadata_fps": 24,
-      "maximum_joint_displacement_from_start_m": 3.1246
+      "maximum_joint_displacement_from_start_m": 3.15101
     },
     {
       "scene": 3,
@@ -94,14 +171,14 @@
       "source_scene": 6,
       "characters": 1,
       "metadata_fps": 24,
-      "maximum_joint_displacement_from_start_m": 1.7012
+      "maximum_joint_displacement_from_start_m": 1.69944
     },
     {
       "scene": 7,
       "source_scene": 6,
       "characters": 1,
       "metadata_fps": 24,
-      "maximum_joint_displacement_from_start_m": 1.7012
+      "maximum_joint_displacement_from_start_m": 1.69944
     },
     {
       "scene": 8,
@@ -312,10 +389,159 @@
     "weather_and_typhoon_use_distinct_3d_shots": true
   },
   "gait_surface_audit": {
-    "fps": 24,
-    "minimum_sole_height_m": 0.005999771105592312,
-    "max_ankle_displacement_per_frame_m": 0.10750749425140825,
-    "maximum_stopped_foot_drift_m": 1.3333208984265686e-07,
-    "travel_m": 1.2400000095367432
+    "pelvis_height_range_m": 0.029650866985321045,
+    "maximum_vertical_change_per_frame_m": 0.0057525634765625,
+    "minimum_sole_height_m": 0.005999907488583625,
+    "stopped_foot_drift_m": 6.365778852490731e-08
+  },
+  "night_walls_and_remote_background": {
+    "night_walls": [
+      {
+        "source_scene": 1,
+        "time_seconds": 8,
+        "wall_pixels_uv": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.1766352504491806,
+              0.3364781141281128
+            ]
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.9771134257316589,
+              0.35222572088241577
+            ]
+          }
+        ],
+        "independent_wall_wash_watts": 40,
+        "camera_location": [
+          3.5,
+          -5.800000190734863,
+          2.450000047683716
+        ],
+        "lens_mm": 31.0,
+        "rendered_frame": 193,
+        "visible_wall_samples": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.1766352504491806,
+              0.3364781141281128
+            ],
+            "mean_rgb_0_to_255": 189.642
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.9771134257316589,
+              0.35222572088241577
+            ],
+            "mean_rgb_0_to_255": 118.419
+          }
+        ]
+      },
+      {
+        "source_scene": 3,
+        "time_seconds": 2.5,
+        "wall_pixels_uv": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.20802631974220276,
+              0.3515283465385437
+            ]
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.915794849395752,
+              0.3795166015625
+            ]
+          }
+        ],
+        "independent_wall_wash_watts": 40,
+        "camera_location": [
+          3.4000000953674316,
+          -6.0,
+          2.9000000953674316
+        ],
+        "lens_mm": 28.0,
+        "rendered_frame": 31,
+        "visible_wall_samples": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.20802631974220276,
+              0.3515283465385437
+            ],
+            "mean_rgb_0_to_255": 174.011
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.915794849395752,
+              0.3795166015625
+            ],
+            "mean_rgb_0_to_255": 106.59
+          }
+        ]
+      },
+      {
+        "source_scene": 4,
+        "time_seconds": 0,
+        "wall_pixels_uv": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.20802631974220276,
+              0.3515283465385437
+            ]
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.915794849395752,
+              0.3795166015625
+            ]
+          }
+        ],
+        "independent_wall_wash_watts": 40,
+        "camera_location": [
+          3.4000000953674316,
+          -6.0,
+          2.9000000953674316
+        ],
+        "lens_mm": 28.0,
+        "rendered_frame": 1,
+        "visible_wall_samples": [
+          {
+            "name": "left_wall",
+            "uv": [
+              0.20802631974220276,
+              0.3515283465385437
+            ],
+            "mean_rgb_0_to_255": 174.011
+          },
+          {
+            "name": "right_window_return",
+            "uv": [
+              0.915794849395752,
+              0.3795166015625
+            ],
+            "mean_rgb_0_to_255": 106.59
+          }
+        ]
+      }
+    ],
+    "remote_control": {
+      "location": "포항 환호공원 스페이스워크",
+      "plate": "production/assets/spacewalk.png",
+      "plate_sha256": "6f9b82c5e9a4aa0957af88357cebb7a0b25c071171e51022ad6b2a744759611f",
+      "landmark_background_rendered_pixel_mean_absolute_difference": 0.0,
+      "background_is_generated_concept_recreation": true,
+      "home_live_inset_source": "masters/10.mp4"
+    }
   }
 }

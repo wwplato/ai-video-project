@@ -33,7 +33,10 @@ def main():
   if denoiser is None:denoiser=Denoiser(color.shape[1],color.shape[0])
   result=denoiser.run(color,alb,nrm);proc.applyRGB(result);rgb=np.uint8(np.clip(result,0,1)*255+.5)
   if a.background:
-   foreground=Image.fromarray(rgb).convert('RGBA');foreground.putalpha(Image.fromarray(np.uint8(np.clip(ch[prefix+'.A'].pixels,0,1)*255+.5)));foreground=foreground.resize((1920,1080),Image.Resampling.LANCZOS);bg=Image.open(a.background).convert('RGB').resize((1920,1080),Image.Resampling.LANCZOS);bg.paste(foreground,(0,0),foreground);image=bg
+   foreground=Image.fromarray(rgb).convert('RGBA');foreground.putalpha(Image.fromarray(np.uint8(np.clip(ch[prefix+'.A'].pixels,0,1)*255+.5)));foreground=foreground.resize((1920,1080),Image.Resampling.LANCZOS)
+   if a.outdir:
+    foreground_dir=a.outdir.parent.parent/'foreground'/a.outdir.name;foreground_dir.mkdir(parents=True,exist_ok=True);foreground.save(foreground_dir/dst.name,compress_level=1)
+   bg=Image.open(a.background).convert('RGB').resize((1920,1080),Image.Resampling.LANCZOS);bg.paste(foreground,(0,0),foreground);image=bg
   else:image=Image.fromarray(rgb)
   dst.parent.mkdir(parents=True,exist_ok=True);image.save(dst,compress_level=0)
   if a.folder and not a.keep_raw:src.unlink()
