@@ -1,0 +1,107 @@
+{
+  "geometry": {
+    "both_side_edges_closed_to_building": true,
+    "viewer_left_side_is_world_right": true,
+    "continuous_front_and_return_handrails": true,
+    "sides": [
+      {
+        "side_in_world": "Left",
+        "exterior_screen_x": 0.9121347069740295,
+        "glass_panels": 2,
+        "new_posts": 2,
+        "wall_joint_overlap_m": [
+          0.05499982833862305,
+          0.16249990463256836,
+          0.03800010681152344
+        ],
+        "front_corner_overlap_m": [
+          0.03749966621398926,
+          0.05499982833862305,
+          0.03800010681152344
+        ],
+        "handrail_top_m": 1.349000096321106,
+        "side_span_m": 3.06499981880188,
+        "stone_curb_bounds": [
+          [
+            -3.7899999618530273,
+            -3.5900001525878906
+          ],
+          [
+            2.5500001907348633,
+            5.579999923706055
+          ],
+          [
+            0.0,
+            0.23999999463558197
+          ]
+        ],
+        "included_in_outdoor_weather_and_screen_masks": true
+      },
+      {
+        "side_in_world": "Right",
+        "exterior_screen_x": 0.0038179748225957155,
+        "glass_panels": 2,
+        "new_posts": 3,
+        "wall_joint_overlap_m": [
+          0.05500030517578125,
+          0.16249990463256836,
+          0.03800010681152344
+        ],
+        "front_corner_overlap_m": [
+          0.03749990463256836,
+          0.05499982833862305,
+          0.03800010681152344
+        ],
+        "handrail_top_m": 1.349000096321106,
+        "side_span_m": 3.06499981880188,
+        "stone_curb_bounds": [
+          [
+            4.590000152587891,
+            4.789999961853027
+          ],
+          [
+            2.5500001907348633,
+            5.579999923706055
+          ],
+          [
+            0.0,
+            0.23999999463558197
+          ]
+        ],
+        "included_in_outdoor_weather_and_screen_masks": true
+      }
+    ]
+  },
+  "full_frame_reference_comparison": {
+    "reference": "Full-frame Cycles render of scene 5 at 3 seconds, same 4 samples and AgX",
+    "regions": [
+      {
+        "rect": [
+          155,
+          238,
+          759,
+          549
+        ]
+      }
+    ],
+    "outside_region_preserves_original_pixels": true,
+    "patched_mean_absolute_difference_from_full_reference": 0.2339720775462963,
+    "previous_mean_absolute_difference_from_full_reference": 0.46119212962962963,
+    "outside_region_reference_mean_absolute_difference": 0.046773950286834676,
+    "outside_region_difference_is_below_one_8bit_level": true
+  },
+  "method": "Same-camera Cycles region renders including shadows; exterior privacy frames are full-frame renders",
+  "source_frames": {
+    "1": 240,
+    "2": 240,
+    "3": 120,
+    "4": 120,
+    "5": 240,
+    "7": 120,
+    "8": 60,
+    "10": 120,
+    "11": 120,
+    "12": 120,
+    "13": 120
+  }
+}

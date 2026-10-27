@@ -11,8 +11,8 @@
     1080
   ],
   "frames": 3600,
-  "size_bytes": 38500885,
-  "sha256": "74a74c9d898cae2bfa9b4dc6c2d1620083da1f097c86c8e7628e04024cb7a8ff",
+  "size_bytes": 38606737,
+  "sha256": "011382063727778c1f9eb505783dbf981f378a57fc1f32e2cde2a6688693a2fd",
   "full_decode": "passed",
   "year": 2035,
   "exists": true,
@@ -45,5 +45,6 @@
   "night_walls": "Wider bedroom and curtain camera views with independent wall-wash lighting",
   "outdoor_space": "Physical 3.65m stone terrace, glass balustrade, landscaping and facade",
   "privacy_exterior": "Animated 3D exterior camera with four-frame dissolve",
-  "curtain_clearance_m": 0.15599989891052246
+  "curtain_clearance_m": 0.15599989891052246,
+  "side_guard_closure": "Both terrace returns connect continuously to the facade and front railing"
 }

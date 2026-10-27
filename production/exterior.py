@@ -22,6 +22,15 @@ def build_exterior(w):
   x=-3.0+j*1.4;cube('Terrace laminated guard panel',(x,5.57,.79),(1.34,.014,1.04),rail_glass,.004)
   cube('Terrace bronze rail post',(x-.69,5.57,.75),(.035,.045,1.25),metal,.005)
  cube('Terrace continuous handrail',(.5,5.57,1.33),(8.4,.055,.038),metal,.008)
+ # Close both side edges to the facade so the viewer-left edge is closed
+ # from the exterior camera too. The front corner posts share the rail joint.
+ w.side_guards=[]
+ for side,x in [('Left',-3.69),('Right',4.69)]:
+  def guard(ob):w.side_guards.append(ob);return ob
+  guard(cube(side+' terrace return stone curb',(x,4.065,.12),(.20,3.03,.24),stone,.018))
+  for y in ([2.56,4.065] if side=='Left' else [2.56,4.065,5.57]):guard(cube(side+' terrace return rail post',(x,y,.75),(.045,.035,1.25),metal,.005))
+  for y in [3.3125,4.8175]:guard(cube(side+' terrace return laminated glass',(x,y,.79),(.014,1.45,1.04),rail_glass,.004))
+  guard(cube(side+' terrace return continuous handrail',(x,4.065,1.33),(.055,3.065,.038),metal,.008))
  planter=mat('Sandstone outdoor planter',(.38,.36,.30),.79);soil=mat('Exterior planting soil',(.055,.047,.03),.99);leaf=mat('Coastal olive foliage',(.12,.22,.09),.65);wood=mat('Olive tree bark',(.19,.14,.08),.86);w.exterior_leaves=[];rng=random.Random(2035)
  for x,y,size in [(-3.18,4.73,.8),(3.78,4.81,1.0)]:
   cube('Terrace planted trough',(x,y,.29),(.68*size,.72*size,.58),planter,.045);cube('Terrace dark soil',(x,y,.586),(.58*size,.61*size,.022),soil,.01)
